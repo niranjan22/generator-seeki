@@ -1,0 +1,46 @@
+<section data-ng-controller="<%= view.modelpluralname %>Controller" data-ng-init="findOne()">
+  <div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+      <h2><%= view.viewname %></h2>
+        <ol class="breadcrumb">
+          <li>
+            <a href="#!/">Home</a>
+          </li>
+          <li>
+            <a href="#!/<%= view.modelparampluralname %>"><%= view.modelname %></a>
+          </li>
+          <li class="active">
+            <strong><%= view.viewname %></strong>
+          </li> 
+        </ol>            
+    </div>
+  </div>
+  <div class="ibox float-e-margins">
+    <div class="ibox-content">
+      <div class="row">
+        <form data-ng-submit="update()" novalidate>
+          <fieldset>
+            <div class="row">
+            <% view.controls.forEach(function(control) { %>
+              <div class="col-md-<%= control.width %> form-group">
+                <label class="control-label" for="<%= control.controlname %>"><%= control.controllabel %></label>
+                <div class="controls">
+                  <input type="<%= control.controltype %>" data-ng-model="<%= view.modelname.toLowerCase() %>.<%= control.modelelement %>" id="<%= control.controlname %>" class="form-control" placeholder="<%= control.exampletext %>" required />
+                </div>
+              </div>    
+            <% }); %>
+            </div>
+            <div class="row">
+              <div data-ng-show="error" class="text-danger">
+                <strong data-ng-bind="error"></strong>
+              </div>               
+              <div class="col-md-2 form-group">
+                <input type="submit" value="Update" class="btn btn-primary" />
+              </div>              
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

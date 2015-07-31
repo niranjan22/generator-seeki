@@ -1,0 +1,46 @@
+<section data-ng-controller="<%= v2.modulename %>sController">
+  <div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+      <h2>New <%= v2.modulename %></h2>
+        <ol class="breadcrumb">
+          <li>
+            <a href="#!/">Home</a>
+          </li>
+          <li>
+            <a href="#!/<%= v2.modulename.toLowerCase() %>s"><%= v2.modulename %></a>
+          </li>
+          <li class="active">
+            <strong>New <%= v2.modulename %></strong>
+          </li> 
+        </ol>            
+    </div>
+  </div>
+  <div class="ibox float-e-margins">
+    <div class="ibox-content">
+      <div class="row">
+        <form data-ng-submit="create()" novalidate>
+          <fieldset>
+            <div class="row">
+            <% v.forEach(function(ele) { %>
+              <div class="col-md-4 form-group">
+                <label class="control-label" for="<%= ele.elementname %>"><%= ele.elementlabel %></label>
+                <div class="controls">
+                  <input type="<%= ele.elementtype %>" data-ng-model="<%= ele.elementname %>" id="<%= ele.elementname %>" class="form-control" placeholder="<%= ele.elementph %>" required />
+                </div>
+              </div>    
+            <% }); %>     
+            </div>
+            <div class="row">
+              <div data-ng-show="error" class="text-danger">
+                <strong data-ng-bind="error"></strong>
+              </div>               
+              <div class="col-md-2 form-group">
+                <input type="submit" class="btn btn-primary" />
+              </div>              
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
