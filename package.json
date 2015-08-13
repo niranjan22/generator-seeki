@@ -19,6 +19,8 @@
     "chalk": "^1.1.0",
     "dictionaryjs": "0.0.8",
     "ejs": "^2.3.2",
+    "change-case": "^2.3.0",
+    "pluralize": "^1.1.4",
     "yeoman-generator": "^0.20.1",
     "yeoman-welcome": "^1.0.1"
   }

@@ -1,79 +1,73 @@
 'use strict';
 
-// <%= view.modelname %> controller
-angular.module('<%= view.modelparampluralname %>').controller('<%= view.modelpluralname %>Controller', ['$scope', '$stateParams', '$location', 'Authentication', '<%= view.modelpluralname %>',
-	function($scope, $stateParams, $location, Authentication, <%= view.modelpluralname %>) {
+// <%= model.pascalCasePlural %> controller
+angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCasePlural %>Controller', ['$scope', '$stateParams', '$location', 'Authentication', '<%= model.pascalCasePlural %>',  <% if(qservices) { %> '<%= qservices %>', <% } %>
+	function($scope, $stateParams, $location, Authentication, <%= model.pascalCasePlural %> <% if(services) { %>, <%= services %> <% } %>) {
 		$scope.authentication = Authentication;
 
-		// Create new <%= view.modelname %>
+		// Create new <%= model.pascalCaseSingular %>
 		$scope.create = function() {
-			// Create new <%= view.modelname %> object
-			var <%= view.modelname.toLowerCase() %> = new <%= view.modelpluralname %> ({
-        <% view.controls.forEach(function(control) { %>
-        <%= control.modelelement %>: this.<%= control.modelelement %>,
+			// Create new <%= model.pascalCaseSingular %> object
+			var <%= model.camelCaseSingular %> = new <%= model.pascalCasePlural %> ({
+        <% model.elements.forEach(function(element) { %><%= element.elementname %>: this.<%= element.elementname %>,
         <% }); %>      
         created: Date.now
-  
 			});
 
 			// Redirect after save
-			<%= view.modelname.toLowerCase() %>.$save(function(response) {
-				$location.path('<%= view.modelparampluralname %>/' + response._id);
+			<%= model.camelCaseSingular %>.$save(function(response) {
+				$location.path('<%= model.paramCasePlural %>/' + response._id);
 
 				// Clear form fields
-				$scope.name = '';
+        <% model.elements.forEach(function(element) { %>$scope.<%= element.elementname %>= null;
+        <% }); %>             
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
 		};
 
-		// Remove existing <%= view.modelname %>
-		$scope.remove = function(<%= view.modelname.toLowerCase() %>) {
-			if ( <%= view.modelname.toLowerCase() %> ) { 
-				<%= view.modelname.toLowerCase() %>.$remove();
+		// Remove existing <%= model.pascalCaseSingular %>
+		$scope.remove = function(<%= model.camelCaseSingular %>) {
+			if ( <%= model.camelCaseSingular %> ) { 
+				<%= model.camelCaseSingular %>.$remove();
 
-				for (var i in $scope.<%= view.modelpluralname %>) {
-					if ($scope.<%= view.modelpluralname.toLowerCase() %> [i] === <%= view.modelname.toLowerCase() %>) {
-						$scope.<%= view.modelpluralname.toLowerCase() %>.splice(i, 1);
+				for (var i in $scope.<%= model.camelCasePlural %>) {
+					if ($scope.<%= model.camelCasePlural %> [i] === <%= model.camelCaseSingular %>) {
+						$scope.<%= model.camelCasePlural %>.splice(i, 1);
 					}
 				}
 			} else {
-				$scope.<%= view.modelname.toLowerCase() %>.$remove(function() {
-					$location.path('<%= view.modelparampluralname %>');
+				$scope.<%= model.camelCaseSingular %>.$remove(function() {
+					$location.path('<%= model.paramCasePlural %>');
 				});
 			}
 		};
 
-		// Update existing <%= view.modelname %>
+		// Update existing <%= model.pascalCaseSingular %>
 		$scope.update = function() {
-			var <%= view.modelname.toLowerCase() %> = $scope.<%= view.modelname.toLowerCase() %>;
+			var <%= model.camelCaseSingular %> = $scope.<%= model.camelCaseSingular %>;
 
-			<%= view.modelname.toLowerCase() %>.$update(function() {
-				$location.path('<%= view.modelparampluralname %>/' + <%= view.modelname.toLowerCase() %>._id);
+			<%= model.camelCaseSingular %>.$update(function() {
+				$location.path('<%= model.paramCasePlural %>/' + <%= model.camelCaseSingular %>._id);
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
 		};
 
-		// Find a list of <%= view.modelname %>
+		// Find a list of <%= model.pascalCasePlural %>
 		$scope.find = function() {
-			$scope.<%= view.modelpluralname.toLowerCase() %> = <%= view.modelpluralname %>.query();
+			$scope.<%= model.camelCasePlural %> = <%= model.pascalCasePlural %>.query();
 		};
 
-		// Find existing <%= view.modelname %>
+		// Find existing <%= model.pascalCaseSingular %>
 		$scope.findOne = function() {
-
-
-      <%= view.modelpluralname %>.get({ 
-				<%= view.modelcamelcasename %>Id: $stateParams.<%= view.modelcamelcasename %>Id
+      <%= model.pascalCasePlural %>.get({ 
+				<%= model.camelCaseSingular %>Id: $stateParams.<%= model.camelCaseSingular %>Id
 			})
       .$promise.then(function(data) {
-        <% view.controls.forEach(function(control) { %>
-        <% if(control.controltype == "Date"){ %>
-        data.<%= control.modelelement %> = moment(data.<%= control.modelelement %>).format('YYYY-MM-DD');
-        <% } %>
-        <% }); %>
-        $scope.<%= view.modelname.toLowerCase() %> = data;
+        <% model.elements.forEach(function(element) { %><% if(element.elementtype == "Date"){ %>data.<%= element.elemetname %> = moment(data.<%= element.elemetname %>).format('YYYY-MM-DD');
+        <% } %><% }); %>
+        $scope.<%= model.camelCaseSingular %> = data;
       }, function(reason) {
         console.log('Failed: ' + reason);
       });      
