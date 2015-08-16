@@ -1,4 +1,4 @@
-<section data-ng-controller="<%= view.modelpluralname %>Controller">
+<section data-ng-controller="<%= view.model.pascalCasePlural %>Controller">
   <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
       <h2><%= view.viewname %></h2>
@@ -7,7 +7,7 @@
             <a href="#!/">Home</a>
           </li>
           <li>
-            <a href="#!/<%= view.modelparampluralname %>"><%= view.modelname %></a>
+            <a href="#!/<%= view.model.paramCasePlural %>"><%= view.model.pascalCasePlural %></a>
           </li>
           <li class="active">
             <strong><%= view.viewname %></strong>
@@ -18,24 +18,71 @@
   <div class="ibox float-e-margins">
     <div class="ibox-content">
       <div class="row">
-        <form data-ng-submit="create()" novalidate>
+        <form>
           <fieldset>
-            <div class="row">
-            <% view.controls.forEach(function(control) { %>
-              <div class="col-md-<%= control.width %> form-group">
-                <label class="control-label" for="<%= control.controlname %>"><%= control.controllabel %></label>
-                <div class="controls">
-                  <input type="<%= control.controltype %>" data-ng-model="<%= control.modelelement %>" id="<%= control.controlname %>" class="form-control" placeholder="<%= control.exampletext %>" required />
+            <div class="row"><% view.sections[0].controls.forEach(function(control) { %><% if (control.controltype === "Nested"){ %><% if (control.isarray){ %>
+              <script type="text/ng-template" id="<%= control.modelelementSl %>Content.html">
+                <div class="modal-header">
+                    <h3 class="modal-title">Item Details</h3>
                 </div>
-              </div>    
-            <% }); %>     
+                <div class="modal-body">
+                  <div class="row"><% control.nestedcontrols.forEach(function(nestedcontrol) { %>
+                    <div class="col-md-<%= nestedcontrol.width %> form-group"><% if(nestedcontrol.controltype==="Select") {%>
+                      <select id="<%= nestedcontrol.controlname %>" class="form-control" 
+                        ng-model="<%= control.modelelementSl %>.<%= nestedcontrol.modelelement %>" 
+                        ng-required="true" 
+                        ng-options="<%= nestedcontrol.options %>" /><% } else {%>
+                      <input type="<%= nestedcontrol.controltype %>" data-ng-model="<%= control.modelelementSl %>.<%= nestedcontrol.modelelement %>" id="<%= nestedcontrol.controlname %>" class="form-control" placeholder="<%= nestedcontrol.exampletext %>" required /><% } %>
+                    </div><% }); %>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-primary" ng-click="ok()">OK</button>
+                  <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                </div>
+              </script>      
+              <div class="col-md-<%= control.width %> form-group">
+                <label class="control-label" for="<%= control.controlname %>"><%= control.controllabel %></label>                
+                <table class="table">
+                  <thead>
+                  <tr><% control.nestedcontrols.forEach(function(nestedcontrol) { %>
+                      <th><%= nestedcontrol.controllabel %></th><% }); %>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr data-ng-repeat="<%= control.modelelementSl %> in <%= control.modelelement %>"><% control.nestedcontrols.forEach(function(nestedcontrol) { %>
+                    <td>{{ <%= control.modelelementSl %>.<%= nestedcontrol.controlname %> <% if(nestedcontrol.controltype == "Date"){ %> | date <% } %>}}</td><% }); %>
+                  </tr>
+                  </tbody>
+                </table>
+                <button class="btn btn-primary" ng-click="add<%= control.modelelementSl %>()"><span class="glyphicon glyphicon-plus"></span></button>
+              </div><% } else { %>
+              <div class="col-md-<%= control.width %> form-group">
+                <label class="control-label" for="<%= control.controlname %>"><%= control.controllabel %></label><% control.nestedcontrols.forEach(function(nestedcontrol) { %>
+                <div class="col-md-<%= nestedcontrol.width %> form-group">
+                  <label class="control-label" for="<%= nestedcontrol.controlname %>"><%= nestedcontrol.controllabel %></label><% if(nestedcontrol.controltype==="Select") {%>
+                  <select id="<%= nestedcontrol.controlname %>" class="form-control" 
+                    ng-model="<%= control.modelelementSl %>.<%= nestedcontrol.modelelement %>" 
+                    ng-required="true" 
+                    ng-options="<%= nestedcontrol.options %>" /><% } else {%>
+                  <input type="<%= nestedcontrol.controltype %>" data-ng-model="<%= control.modelelement %>.<%= nestedcontrol.modelelement %>" id="<%= nestedcontrol.controlname %>" class="form-control" placeholder="<%= nestedcontrol.exampletext %>" required /><% } %>
+                </div><% }); %>
+              </div><% } %><% } else { %>
+              <div class="col-md-<%= control.width %> form-group">
+                <label class="control-label" for="<%= control.controlname %>"><%= control.controllabel %></label><% if(control.controltype==="Select") {%> 
+                <select id="<%= control.controlname %>" class="form-control" 
+                  ng-model="<%= control.modelelement %>" 
+                  ng-required="true" 
+                  ng-options="<%= control.options %>" /><% } else {%>
+                <input type="<%= control.controltype %>" data-ng-model="<%= control.modelelement %>" id="<%= control.controlname %>" class="form-control" placeholder="<%= control.exampletext %>" required /><% } %> 
+              </div><% } %><% }); %>
             </div>
             <div class="row">
               <div data-ng-show="error" class="text-danger">
                 <strong data-ng-bind="error"></strong>
               </div>               
               <div class="col-md-2 form-group">
-                <input type="submit" class="btn btn-primary" />
+                <button ng-click="create()" class="btn btn-primary" >Save</button>
               </div>              
             </div>
           </fieldset>

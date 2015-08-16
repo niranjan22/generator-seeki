@@ -1,4 +1,4 @@
-<section data-ng-controller="<%= view.modelpluralname %>Controller" data-ng-init="findOne()">
+<section data-ng-controller="<%= model.pascalCasePlural %>Controller" data-ng-init="findOne()">
   <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
       <h2><%= view.viewname %></h2>
@@ -7,7 +7,7 @@
             <a href="#!/">Home</a>
           </li>
           <li>
-            <a href="#!/<%= view.modelparampluralname %>"><%= view.modelname %></a>
+            <a href="#!/<%= model.paramCasePlural %>"><%= model.pascalCasePlural %></a>
           </li>
           <li class="active">
             <strong><%= view.viewname %></strong>
@@ -16,24 +16,21 @@
     </div>
   </div>
   <!-- general form elements -->
-  <div class="ibox float-e-margins"  data-ng-show="((authentication.user) && (authentication.user._id == <%= view.modelname.toLowerCase() %>.user._id))">
+  <div class="ibox float-e-margins"  data-ng-show="((authentication.user) && (authentication.user._id == <%= model.camelCaseSingular %>.user._id))">
     <div class="ibox-content">    
       <div class="row">
         <div class="col-md-4">
           <dl class="dl-horizontal"> 
-            <% for(var i=0; i<view.controls.length; i++) {
-              var control = view.controls[i];%>
-              <%if(control.controltype == "Date"){ %>
-                 <dt><%= control.controllabel %> </dt><dd>{{ <%= view.modelname.toLowerCase() %>.<%= control.modelelement %> | date }}</dd>
-              <% } else{ %>  
-                 <dt><%= control.controllabel %> </dt><dd>{{ <%= view.modelname.toLowerCase() %>.<%= control.modelelement %> }}</dd>
-              <% } %>
-            <% }; %>
+            <% view.sections[0].controls.forEach( function (control) { %>
+            <% if (control.controltype !== "Nested"){ %>
+            <dt><%= control.controllabel %> </dt><dd>{{ <%= model.camelCaseSingular %>.<%= control.modelelement %><%if(control.controltype == "Date"){ %> | date <% } %>}}</dd>
+            <% } %>
+            <% }); %>
           </dl>
         </div>
       </div>
       <div>
-        <a class="btn btn-primary" href="/#!/<%= view.modelparampluralname %>/{{<%= view.modelname.toLowerCase() %>._id}}/edit">
+        <a class="btn btn-primary" href="/#!/<%= model.paramCasePlural %>/{{<%= model.camelCaseSingular %>._id}}/edit">
           <i class="glyphicon glyphicon-edit"></i>
         </a>
         <a class="btn btn-primary" data-ng-click="remove();">

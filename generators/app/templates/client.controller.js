@@ -1,26 +1,27 @@
 'use strict';
 
 // <%= model.pascalCasePlural %> controller
-angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCasePlural %>Controller', ['$scope', '$stateParams', '$location', 'Authentication', '<%= model.pascalCasePlural %>',  <% if(qservices) { %> '<%= qservices %>', <% } %>
-	function($scope, $stateParams, $location, Authentication, <%= model.pascalCasePlural %> <% if(services) { %>, <%= services %> <% } %>) {
-		$scope.authentication = Authentication;
-
+angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCasePlural %>Controller', ['$scope', '$modal', '$stateParams', '$location', '$log', '$filter', 'Authentication', '<%= model.pascalCasePlural %>'<% if( controller.services.length > 0 ) { controller.services.forEach ( function (service) { %>, '<%=service%>'<% }); } %>,
+ 	function($scope, $modal, $stateParams, $location, $log, $filter, Authentication, <%= model.pascalCasePlural %><% if( controller.services.length > 0 ) { controller.services.forEach ( function (service) { %>, <%= service %><% }); } %>) {
+		$scope.authentication = Authentication;<% controller.lookups.forEach ( function (lookup) { %>
+    $scope.<%= lookup.lookupname %> = <%= lookup.expression %><% }); %>
+    
 		// Create new <%= model.pascalCaseSingular %>
 		$scope.create = function() {
 			// Create new <%= model.pascalCaseSingular %> object
-			var <%= model.camelCaseSingular %> = new <%= model.pascalCasePlural %> ({
-        <% model.elements.forEach(function(element) { %><%= element.elementname %>: this.<%= element.elementname %>,
-        <% }); %>      
+			var <%= model.camelCaseSingular %> = new <%= model.pascalCasePlural %> ({<% model.elements.forEach(function(element) { %>
+        <%= element.elementname %>: this.<%= element.elementname %>,<% }); %>      
         created: Date.now
 			});
 
 			// Redirect after save
 			<%= model.camelCaseSingular %>.$save(function(response) {
-				$location.path('<%= model.paramCasePlural %>/' + response._id);
-
+				//$location.path('<%= model.paramCasePlural %>/' + response._id);
+        $location.path('<%= model.paramCasePlural %>');
+        
 				// Clear form fields
-        <% model.elements.forEach(function(element) { %>$scope.<%= element.elementname %>= null;
-        <% }); %>             
+        <% model.elements.forEach(function(element) { %>
+        $scope.<%= element.elementname %>= null;<% }); %>             
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
@@ -64,15 +65,45 @@ angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCaseP
       <%= model.pascalCasePlural %>.get({ 
 				<%= model.camelCaseSingular %>Id: $stateParams.<%= model.camelCaseSingular %>Id
 			})
-      .$promise.then(function(data) {
-        <% model.elements.forEach(function(element) { %><% if(element.elementtype == "Date"){ %>data.<%= element.elemetname %> = moment(data.<%= element.elemetname %>).format('YYYY-MM-DD');
-        <% } %><% }); %>
+      .$promise.then(function(data) {<% model.elements.forEach(function(element) { %><% if(element.elementtype == "Date"){ %>
+        data.<%= element.elementname %> = $filter('date')(data.<%= element.elementname %>, 'yyyy-MM-dd');<% } %><% }); %>
         $scope.<%= model.camelCaseSingular %> = data;
       }, function(reason) {
         console.log('Failed: ' + reason);
       });      
-      
-      
 		};
+    <% model.elements.forEach(function(element) { %><% if (element.elementtype === 'Nested') { %><% if (element.isarray === true) {%>
+    $scope.add<%= element.elementNameSingular %> = function () {
+      var modalInstance = $modal.open({
+        animation: false,
+        templateUrl: '<%= element.elementNameSingular %>Content.html',
+        controller: '<%= element.elementNameSingular %>InstanceCtrl',
+        size: 'lg',
+        resolve: {
+          <%= element.elementNameSingular %>: function () {
+            var e = {};
+            return e;
+          }        
+        }
+      });
+      modalInstance.result.then(function (<%= element.elementNameSingular %>) {
+        $scope.<%= element.elementname %>.push(<%= element.elementNameSingular %>);
+      }, function () {
+        $log.info('Modal dismissed at: ' + new Date());
+      });
+    };<% } %> <% } %> <% }); %>
 	}
 ]);
+<% model.elements.forEach(function(element) { %><% if (element.elementtype === 'Nested') { %>
+angular.module('<%= model.paramCasePlural %>').controller('<%= element.elementNameSingular %>InstanceCtrl', function ($scope, $modalInstance, <%= element.elementNameSingular %>) {
+  $scope.<%= element.elementNameSingular %> = <%= element.elementNameSingular %>;
+
+  $scope.ok = function () {
+    $modalInstance.close($scope.<%= element.elementNameSingular %>);
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+
+});<% } %><% }); %>

@@ -9,111 +9,142 @@ module.exports = generators.Base.extend({
     console.log(require('yeoman-welcome'));
     this.appelements = {};
   },
-  
+
   getappelements: function (cb) {
     cb = cb || this.async();
-    
+
     var prompts = {
       type: 'input',
       name: 'jsonfile',
       message: chalk.blue('JSON File')
-    }
-    this.prompt(prompts, function (ans) {
+    };
+    
+    this.prompt(prompts, function (input) {
+      var project = this.fs.readJSON(input.jsonfile);
+      project.name = cc.pascalCase(pl(project.name,1));
+      var models = [];
       
-      var jsonfile = ans.jsonfile;
-      var jsonObject = this.fs.readJSON(jsonfile);
-      var project = jsonObject;
-      var projectname = project.name.toLowerCase().replace(" ", "");
-      var model = {};
-      
-      for (var index in project.models) {
-        var m = project.models[index];
-        model = { name                  : m.name,
-                  camelCaseSingular     : cc.camelCase(pl(m.name,1)),
-                  camelCasePlural       : cc.camelCase(pl(m.name)),
-                  paramCaseSingular     : cc.paramCase(pl(m.name,1)),
-                  paramCasePlural       : cc.paramCase(pl(m.name)),
-                  pascalCaseSingular    : cc.pascalCase(pl(m.name,1)),
-                  pascalCasePlural      : cc.pascalCase(pl(m.name)),
-                  upperCaseFirstSingular: cc.upperCaseFirst(pl(m.name,1)),
-                  upperCaseFirstPlural  : cc.upperCaseFirst(pl(m.name)),
-                  elements              : m.elements
+      project.models.forEach ( function (model){
+        var m = { name                  : model.name,
+                  camelCaseSingular     : cc.camelCase(pl(model.name,1)),
+                  camelCasePlural       : cc.camelCase(pl(model.name)),
+                  paramCaseSingular     : cc.paramCase(pl(model.name,1)),
+                  paramCasePlural       : cc.paramCase(pl(model.name)),
+                  pascalCaseSingular    : cc.pascalCase(pl(model.name,1)),
+                  pascalCasePlural      : cc.pascalCase(pl(model.name)),
+                  upperCaseFirstSingular: cc.upperCaseFirst(pl(model.name,1)),
+                  upperCaseFirstPlural  : cc.upperCaseFirst(pl(model.name)),
+                  elements              : []
                 };
+        model.elements.forEach( function (element) {
+          if (element.elementtype === 'Nested') {
+            var e = {};
+            if (element.isarray === true) {
+              e = {elementname: element.elementname, elementtype: element.elementtype, isarray: element.isarray,
+              elementNameSingular: pl(element.elementname,1), elements: element.elements};
+            } else {
+              e = {elementname: element.elementname, elementtype: element.elementtype, isarray: element.isarray, elements: element.elements};
+            }
+/*             if (element.isarray === true) {
+              e.elementNameSingular = pl(element.elementname,1);
+            } */
+            m.elements.push(e);
+          } else {
+            m.elements.push(element);
+          }
+        });
+        models.push(m);
+      });
+      
+      //Generate model outputs
+      for (var index in project.models) {
+        var model = project.models[index];
         this.fs.copyTpl(
           this.templatePath('server.model.js'),
-          this.destinationPath(projectname + '/app/models/' + model.paramCaseSingular + '.server.model.js'),
+          this.destinationPath(project.name + '/app/models/' + model.paramCaseSingular + '.server.model.js'),
           {model: model});
-      }
+      };
       
-      /*
-      for (var index in jsonObject.views) {
-        var view = jsonObject.views[index];
-        
+      //Generate view outputs
+      for (var index in project.views) {
+        var view = project.views[index];
+        var model = models.filter( function (m) {
+          if (m.name === view.modelname) {
+            return m;
+          }
+        })[0];
+        view.model = model;
+        for (var sindex in view.sections) {
+          var section = view.sections[sindex];
+          for (var cindex in section.controls) {
+            var control = section.controls[cindex];
+            if (control.controltype === 'Nested') {
+              if (control.isarray === true) {
+                control.modelelementSl = pl(control.modelelement,1);
+                //control.modelelementPL = pl(control.modelelement);
+              }
+            }
+            section.controls[cindex] = control;
+          };
+          view.sections[sindex] = section;
+        };
         if(view.viewtype == 'list'){
           this.fs.copyTpl(
             this.templatePath(view.viewtype + '-client.view.html'),
-            this.destinationPath(projectname + '/public/modules/' + view.modelparampluralname + '/views/' + view.viewtype + '-' + view.modelparampluralname + '.client.view.html'),
-            {view: view});
+            this.destinationPath(project.name + '/public/modules/' + model.paramCasePlural + '/views/' + view.viewtype + '-' + model.paramCasePlural + '.client.view.html'),
+            {view: view, model: model});
         }else{
-          this.fs.copyTpl(        
+          this.fs.copyTpl(
             this.templatePath(view.viewtype + '-client.view.html'),
-            this.destinationPath(projectname + '/public/modules/' + view.modelparampluralname + '/views/' + view.viewtype + '-' + view.modelparamname + '.client.view.html'),
-            {view: view});
-        
+            this.destinationPath(project.name + '/public/modules/' + model.paramCasePlural + '/views/' + view.viewtype + '-' + model.paramCaseSingular + '.client.view.html'),
+            {view: view, model: model});
         }
-      }
-      */
-      
-      //todo: create a seperate loop to load all controllers
+      };
 
+
+      //Generate controllers
       for (var index in project.controllers) {
         var controller = project.controllers[index];
-        
-        var m = project.models.filter(function (model) {
-          if (model.name === controller.modelname) {
-            return model;
+        var model = models.filter(function (m) {
+          if (m.name === controller.modelname) {
+            return m;
           }
         })[0];
-        model = { name                  : m.name,
-                  camelCaseSingular     : cc.camelCase(pl(m.name,1)),
-                  camelCasePlural       : cc.camelCase(pl(m.name)),
-                  paramCaseSingular     : cc.paramCase(pl(m.name,1)),
-                  paramCasePlural       : cc.paramCase(pl(m.name)),
-                  pascalCaseSingular    : cc.pascalCase(pl(m.name,1)),
-                  pascalCasePlural      : cc.pascalCase(pl(m.name)),
-                  upperCaseFirstSingular: cc.upperCaseFirst(pl(m.name,1)),
-                  upperCaseFirstPlural  : cc.upperCaseFirst(pl(m.name)),
-                  elements              : m.elements
-                };
-        var qservices = controller.services.toString().replace(/,/g,"','");
-        
+
+        var services = [];
+        controller.services.forEach( function (service) {
+          services.push (cc.pascalCase(pl(service)));
+        });
+        controller.services = services;
+
         this.fs.copyTpl(
           this.templatePath('client.controller.js'),
-          this.destinationPath(projectname + '/public/modules/' + model.paramCasePlural + '/controllers/' + model.paramCasePlural + '.client.controller.js'),
-          {controller: controller, 
-          model: model, services: controller.services.toString(), 
-          qservices: qservices}
+          this.destinationPath(project.name + '/public/modules/' + model.paramCasePlural + '/controllers/' + model.paramCasePlural + '.client.controller.js'),
+          {controller: controller, model: model}
         );
-      }
-      
-      for (var index in project.menus) {
-        for (var sindex in project.menus[index].submenus) {
-          var submenu = project.menus[index].submenus[sindex];
+      };
+
+      var menus = [];
+      project.menus.forEach( function (menu) {
+        var m = {menuname: cc.titleCase(menu.menuname),
+        menulabel: cc.titleCase(menu.menulabel),
+        submenus: []};
+        menu.submenus.forEach( function (submenu) {
           if (submenu.modelname){
             submenu = {mainmenuname: submenu.mainmenuname,
                       submenulabel: cc.titleCase(cc.sentenceCase(pl(submenu.modelname))),
                       submenuname: cc.paramCase(pl(submenu.modelname))}
-            project.menus[index].submenus[sindex] = submenu;
+            m.submenus.push(submenu);
           }
-        };
-      };
-      
-      
+        });
+        menus.push(m);
+      });
+
       this.fs.copyTpl(
         this.templatePath('core.client.config.js'),
-        this.destinationPath(projectname + '/public/modules/core/config/core.client.config.js'),
-        {menus: project.menus});
-    
+        this.destinationPath(project.name + '/public/modules/core/config/core.client.config.js'),
+        {menus: menus});
+
       cb();
     }.bind(this));
   }

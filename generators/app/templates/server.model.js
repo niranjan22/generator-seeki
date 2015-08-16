@@ -7,9 +7,9 @@ var mongoose = require('mongoose'),
 	Schema = mongoose.Schema;
 
 /**
- * <%= model.name %> Schema
+ * <%= model.pascalCaseSingular %> Schema
  */
-var <%= model.name %>Schema = new Schema({
+var <%= model.pascalCaseSingular %>Schema = new Schema({
   <% model.elements.forEach(function(element) { %>
     <% if ( element.elementtype === 'Schema.Types.ObjectId' ) { %>
     <%= element.elementname %>: {
@@ -49,4 +49,4 @@ var <%= model.name %>Schema = new Schema({
 	}
 });
 
-mongoose.model('<%= model.name %>', <%= model.name %>Schema);
+mongoose.model('<%= model.pascalCaseSingular %>', <%= model.pascalCaseSingular %>Schema);
