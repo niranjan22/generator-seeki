@@ -42,6 +42,30 @@ module.exports = generators.Base.extend({
             if (element.isarray === true) {
               e = {elementname: element.elementname, elementtype: element.elementtype, isarray: element.isarray,
               elementNameSingular: pl(element.elementname,1), elements: element.elements};
+              
+              e.resolveLookups = '';
+              e.elements.forEach( function (ne) {
+                if (ne.elementtype === 'Schema.Types.ObjectId') {
+                  var dmodelName = models.filter( function (ml) {
+                    if (ne.schemaobjref === ml.name){
+                      return ml;
+                    }
+                  })[0].name;
+                  e.resolveLookups = e.resolveLookups + ', \n' + cc.camelCase(pl(dmodelName)) + ': function () { return ' + cc.pascalCase(pl(dmodelName)) + '.query(); }'
+                }
+              });
+              
+              e.modelDependencies = [];
+              e.elements.forEach( function (ne) {
+                if (ne.elementtype === 'Schema.Types.ObjectId') {
+                  var dmodelName = models.filter( function (ml) {
+                    if (ne.schemaobjref === ml.name){
+                      return ml;
+                    }
+                  })[0].name;
+                  e.modelDependencies.push(cc.camelCase(pl(dmodelName)));
+                }
+              });
             } else {
               e = {elementname: element.elementname, elementtype: element.elementtype, isarray: element.isarray, elements: element.elements};
             }
@@ -57,8 +81,8 @@ module.exports = generators.Base.extend({
       });
       
       //Generate model outputs
-      for (var index in project.models) {
-        var model = project.models[index];
+      for (var index in models) {
+        var model = models[index];
         this.fs.copyTpl(
           this.templatePath('server.model.js'),
           this.destinationPath(project.name + '/app/models/' + model.paramCaseSingular + '.server.model.js'),
@@ -83,11 +107,31 @@ module.exports = generators.Base.extend({
                 control.modelelementSl = pl(control.modelelement,1);
                 //control.modelelementPL = pl(control.modelelement);
               }
+              
+              control.nestedcontrols.forEach( function (nestedControl) {
+                if (nestedControl.controltype === 'Select' && (nestedControl.modelname)) {
+                  var m = models.filter( function (md) {
+                    if (md.name === nestedControl.modelname) {
+                      return md;
+                    }
+                  })[0];
+                  nestedControl.options = m.camelCaseSingular + '._id as ' + m.camelCaseSingular + '.name for ' + m.camelCaseSingular + ' in ' + m.camelCasePlural;
+                }                
+              });
+            }
+            if (control.controltype === 'Select' && (control.modelname)) {
+              var m = models.filter( function (md) {
+                if (md.name === control.modelname) {
+                  return md;
+                }
+              })[0];
+              control.options = m.camelCaseSingular + '._id as ' + m.camelCaseSingular + '.name for ' + m.camelCaseSingular + ' in ' + m.camelCasePlural;
             }
             section.controls[cindex] = control;
           };
           view.sections[sindex] = section;
         };
+        
         if(view.viewtype == 'list'){
           this.fs.copyTpl(
             this.templatePath(view.viewtype + '-client.view.html'),

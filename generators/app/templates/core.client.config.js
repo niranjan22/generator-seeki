@@ -1,5 +1,4 @@
 'use strict';
-
 // Configuring the Core module
 angular.module('core').run(['Menus',
 	function(Menus) {

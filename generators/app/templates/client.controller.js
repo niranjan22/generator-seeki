@@ -83,7 +83,7 @@ angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCaseP
           <%= element.elementNameSingular %>: function () {
             var e = {};
             return e;
-          }        
+          }<% if (element.resolveLookups) {%><%= element.resolveLookups %><% } %>
         }
       });
       modalInstance.result.then(function (<%= element.elementNameSingular %>) {
@@ -95,9 +95,9 @@ angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCaseP
 	}
 ]);
 <% model.elements.forEach(function(element) { %><% if (element.elementtype === 'Nested') { %>
-angular.module('<%= model.paramCasePlural %>').controller('<%= element.elementNameSingular %>InstanceCtrl', function ($scope, $modalInstance, <%= element.elementNameSingular %>) {
-  $scope.<%= element.elementNameSingular %> = <%= element.elementNameSingular %>;
-
+angular.module('<%= model.paramCasePlural %>').controller('<%= element.elementNameSingular %>InstanceCtrl', function ($scope, $modalInstance, <%= element.elementNameSingular %> <% if (element.modelDependencies) { %><% element.modelDependencies.forEach( function (modelDependency) { %>, <%= modelDependency %> <% }) %><% } %>{
+  $scope.<%= element.elementNameSingular %> = <%= element.elementNameSingular %>;<% if (element.modelDependencies){ %><% element.modelDependencies.forEach( function (modelDependency) { %>
+  $scope.<%= modelDependency %> = <%= modelDependency %>;<% }) %><% } %>
   $scope.ok = function () {
     $modalInstance.close($scope.<%= element.elementNameSingular %>);
   };
