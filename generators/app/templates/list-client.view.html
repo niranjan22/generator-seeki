@@ -1,4 +1,4 @@
-<section data-ng-controller="<%= model.pascalCasePlural %>Controller" data-ng-init="find()">
+<section data-ng-controller="<%= view.model.pascalCasePlural %>Controller" data-ng-init="find()">
   <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
       <h2><%= view.viewname %></h2>
@@ -13,20 +13,20 @@
     </div>
   </div>
 
-  <div class="alert alert-warning text-center" data-ng-hide="!<%= model.camelCasePlural %>.$resolved || <%= model.camelCasePlural %>.length">
-    No <%= model.pascalCasePlural %> yet, why don't you <a href="/#!/<%= model.paramCasePlural %>/create">create one</a>?
+  <div class="alert alert-warning text-center" data-ng-hide="!<%= view.model.camelCasePlural %>.$resolved || <%= view.model.camelCasePlural %>.length">
+    No <%= view.model.pascalCasePlural %> yet, why don't you <a href="/#!/<%= view.model.paramCasePlural %>/create">create one</a>?
   </div>  
-  <div class="ibox float-e-margins" data-ng-show="<%= model.camelCasePlural %>.length>0">
+  <div class="ibox float-e-margins" data-ng-show="<%= view.model.camelCasePlural %>.length>0">
     <div class="ibox-title">
-      <h5><%= model.pascalCasePlural %> ({{<%= model.camelCasePlural %>.length}})</h5>
+      <h5><%= view.model.pascalCasePlural %> ({{<%= view.model.camelCasePlural %>.length}})</h5>
       <div class="ibox-tools">
-        <a href="/#!/<%= model.paramCasePlural %>/create" class="btn btn-primary btn-xs">Create</a>
+        <a href="/#!/<%= view.model.paramCasePlural %>/create" class="btn btn-primary btn-xs">Create</a>
       </div>
     </div>
       
     <div class="ibox-content">
       <div class="input-group">
-        <input type="text" ng-model="searchtext" placeholder="Search <%= model.pascalCasePlural %>" class="input form-control">
+        <input type="text" ng-model="searchtext" placeholder="Search <%= view.model.pascalCasePlural %>" class="input form-control">
         <span class="input-group-btn">
             <button type="button" class="btn btn btn-primary"> <i class="fa fa-search"></i> Search</button>
         </span>
@@ -44,13 +44,13 @@
           </tr>
           </thead>
           <tbody>
-          <tr data-ng-repeat="<%= model.camelCaseSingular %> in <%= model.camelCasePlural %> | filter: searchtext">
+          <tr data-ng-repeat="<%= view.model.camelCaseSingular %> in <%= view.model.camelCasePlural %> | filter: searchtext">
               <% view.sections[0].controls.forEach(function(control) { %>
-              <td>{{ <%= model.camelCaseSingular %>.<%= control.controlname %> <% if(control.controltype == "Date"){ %> | date <% } %>}}</td>
+              <td>{{ <%= view.model.camelCaseSingular %>.<%= control.controlname %> <% if(control.controltype == "Date"){ %> | date <% } %>}}</td>
               <% }); %>
-              <td><a class="glyphicon glyphicon-edit" href="/#!/<%= model.paramCasePlural %>/{{<%= model.camelCaseSingular %>._id}}"></a></td>
-              <td><a class="glyphicon glyphicon-edit" href="/#!/<%= model.paramCasePlural %>/{{<%= model.camelCaseSingular %>._id}}/edit"></a></td>
-              <td><a class="glyphicon glyphicon-edit" ng-click="remove(<%= model.camelCaseSingular %>)"></a></td>
+              <td><a class="glyphicon glyphicon-edit" href="/#!/<%= view.model.paramCasePlural %>/{{<%= view.model.camelCaseSingular %>._id}}"></a></td>
+              <td><a class="glyphicon glyphicon-edit" href="/#!/<%= view.model.paramCasePlural %>/{{<%= view.model.camelCaseSingular %>._id}}/edit"></a></td>
+              <td><a class="glyphicon glyphicon-edit" ng-click="remove(<%= view.model.camelCaseSingular %>)"></a></td>
           </tr>
           </tbody>
         </table>

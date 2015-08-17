@@ -42,38 +42,48 @@ module.exports = generators.Base.extend({
             if (element.isarray === true) {
               e = {elementname: element.elementname, elementtype: element.elementtype, isarray: element.isarray,
               elementNameSingular: pl(element.elementname,1), elements: element.elements};
-              
-              e.resolveLookups = '';
+
               e.elements.forEach( function (ne) {
                 if (ne.elementtype === 'Schema.Types.ObjectId') {
-                  var dmodelName = models.filter( function (ml) {
+                  var dmodelName = project.models.filter( function (ml) {
                     if (ne.schemaobjref === ml.name){
                       return ml;
                     }
                   })[0].name;
-                  e.resolveLookups = e.resolveLookups + ', \n' + cc.camelCase(pl(dmodelName)) + ': function () { return ' + cc.pascalCase(pl(dmodelName)) + '.query(); }'
+                  ne.schemaobjref = cc.pascalCase(pl(dmodelName,1));
+                  ne.camelCaseSchemaobjref = cc.camelCase(pl(dmodelName,1));
+                  ne.pascalCaseSchemaobjref = cc.pascalCase(pl(dmodelName));
+                }
+              });
+              
+              e.resolveLookups = '';
+              e.elements.forEach( function (ne) {
+                if (ne.elementtype === 'Schema.Types.ObjectId') {
+                  e.resolveLookups = e.resolveLookups + ', \n' + ne.camelCaseSchemaobjref + ': function () { return ' + ne.pascalCaseSchemaobjref + '.query(); }'
                 }
               });
               
               e.modelDependencies = [];
               e.elements.forEach( function (ne) {
                 if (ne.elementtype === 'Schema.Types.ObjectId') {
-                  var dmodelName = models.filter( function (ml) {
-                    if (ne.schemaobjref === ml.name){
-                      return ml;
-                    }
-                  })[0].name;
-                  e.modelDependencies.push(cc.camelCase(pl(dmodelName)));
+                  e.modelDependencies.push(ne.camelCaseSchemaobjref);
                 }
               });
+              
             } else {
-              e = {elementname: element.elementname, elementtype: element.elementtype, isarray: element.isarray, elements: element.elements};
+              if (element.elementtype === 'Schema.Types.ObjectId') {
+                element.schemaobjref = cc.pascalCase(pl(element.schemaobjref,1));
+              }
+              e = {elementname: element.elementname, elementtype: element.elementtype, schemaobjref: element.schemaobjref, isarray: element.isarray, elements: element.elements};
             }
 /*             if (element.isarray === true) {
               e.elementNameSingular = pl(element.elementname,1);
             } */
             m.elements.push(e);
           } else {
+            if (element.elementtype === 'Schema.Types.ObjectId') {
+              element.schemaobjref = cc.pascalCase(pl(element.schemaobjref,1));
+            }            
             m.elements.push(element);
           }
         });
@@ -141,7 +151,7 @@ module.exports = generators.Base.extend({
           this.fs.copyTpl(
             this.templatePath(view.viewtype + '-client.view.html'),
             this.destinationPath(project.name + '/public/modules/' + model.paramCasePlural + '/views/' + view.viewtype + '-' + model.paramCaseSingular + '.client.view.html'),
-            {view: view, model: model});
+            {view: view});
         }
       };
 
