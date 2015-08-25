@@ -24,6 +24,8 @@ module.exports = generators.Base.extend({
       project.name = cc.pascalCase(pl(project.name,1));
       var models = [];
       
+      project.models.push({name: 'User'});
+      
       project.models.forEach ( function (model){
         var m = { name                  : model.name,
                   camelCaseSingular     : cc.camelCase(pl(model.name,1)),
@@ -36,59 +38,64 @@ module.exports = generators.Base.extend({
                   upperCaseFirstPlural  : cc.upperCaseFirst(pl(model.name)),
                   elements              : []
                 };
-        model.elements.forEach( function (element) {
-          if (element.elementtype === 'Nested') {
-            var e = {};
-            if (element.isarray === true) {
-              e = {elementname: element.elementname, elementtype: element.elementtype, isarray: element.isarray,
-              elementNameSingular: pl(element.elementname,1), elements: element.elements};
+        if (model.elements) {
+          model.elements.forEach( function (element) {
 
-              e.elements.forEach( function (ne) {
-                if (ne.elementtype === 'Schema.Types.ObjectId') {
-                  var dmodelName = project.models.filter( function (ml) {
-                    if (ne.schemaobjref === ml.name){
-                      return ml;
-                    }
-                  })[0].name;
-                  ne.schemaobjref = cc.pascalCase(pl(dmodelName,1));
-                  ne.camelCaseSchemaobjref = cc.camelCase(pl(dmodelName,1));
-                  ne.pascalCaseSchemaobjref = cc.pascalCase(pl(dmodelName));
+            if (element.elementtype === 'Nested') {
+              var e = {};
+              if (element.isarray === true) {
+                e = {elementname: element.elementname, elementtype: element.elementtype, isarray: element.isarray,
+                elementNameSingular: pl(element.elementname,1), elements: element.elements};
+
+                e.elements.forEach( function (ne) {
+                  if (ne.elementtype === 'Schema.Types.ObjectId') {
+                    var dmodelName = project.models.filter( function (ml) {
+                      if (ne.schemaobjref === ml.name){
+                        return ml;
+                      }
+                    })[0].name;
+                    
+                    ne.schemaobjref = cc.pascalCase(pl(dmodelName,1));
+                    ne.camelCaseSchemaobjref = cc.camelCase(pl(dmodelName));
+                    ne.pascalCaseSchemaobjref = cc.pascalCase(pl(dmodelName));
+                  }
+                });
+                
+                e.resolveLookups = '';
+                e.elements.forEach( function (ne) {
+                  if (ne.elementtype === 'Schema.Types.ObjectId') {
+                    e.resolveLookups = e.resolveLookups + ', \n' + ne.camelCaseSchemaobjref + ': function () { return ' + ne.pascalCaseSchemaobjref + '.query(); }'
+                  }
+                });
+                
+                e.modelDependencies = [];
+                e.elements.forEach( function (ne) {
+                  if (ne.elementtype === 'Schema.Types.ObjectId') {
+                    e.modelDependencies.push(ne.camelCaseSchemaobjref);
+                  }
+                });
+                
+              } else {
+                if (element.elementtype === 'Schema.Types.ObjectId') {
+                  element.schemaobjref = cc.pascalCase(pl(element.schemaobjref,1));
                 }
-              });
-              
-              e.resolveLookups = '';
-              e.elements.forEach( function (ne) {
-                if (ne.elementtype === 'Schema.Types.ObjectId') {
-                  e.resolveLookups = e.resolveLookups + ', \n' + ne.camelCaseSchemaobjref + ': function () { return ' + ne.pascalCaseSchemaobjref + '.query(); }'
-                }
-              });
-              
-              e.modelDependencies = [];
-              e.elements.forEach( function (ne) {
-                if (ne.elementtype === 'Schema.Types.ObjectId') {
-                  e.modelDependencies.push(ne.camelCaseSchemaobjref);
-                }
-              });
-              
+                e = {elementname: element.elementname, elementtype: element.elementtype, schemaobjref: element.schemaobjref, isarray: element.isarray, elements: element.elements};
+              }
+  /*             if (element.isarray === true) {
+                e.elementNameSingular = pl(element.elementname,1);
+              } */
+              m.elements.push(e);
             } else {
               if (element.elementtype === 'Schema.Types.ObjectId') {
                 element.schemaobjref = cc.pascalCase(pl(element.schemaobjref,1));
-              }
-              e = {elementname: element.elementname, elementtype: element.elementtype, schemaobjref: element.schemaobjref, isarray: element.isarray, elements: element.elements};
+              }            
+              m.elements.push(element);
             }
-/*             if (element.isarray === true) {
-              e.elementNameSingular = pl(element.elementname,1);
-            } */
-            m.elements.push(e);
-          } else {
-            if (element.elementtype === 'Schema.Types.ObjectId') {
-              element.schemaobjref = cc.pascalCase(pl(element.schemaobjref,1));
-            }            
-            m.elements.push(element);
-          }
-        });
+          });
+        }
         models.push(m);
       });
+      
       
       //Generate model outputs
       for (var index in models) {
@@ -180,12 +187,12 @@ module.exports = generators.Base.extend({
 
       var menus = [];
       project.menus.forEach( function (menu) {
-        var m = {menuname: cc.titleCase(menu.menuname),
+        var m = {menuname: cc.lowerCase(menu.menuname),
         menulabel: cc.titleCase(menu.menulabel),
         submenus: []};
         menu.submenus.forEach( function (submenu) {
           if (submenu.modelname){
-            submenu = {mainmenuname: submenu.mainmenuname,
+            submenu = {mainmenuname: cc.lowerCase(submenu.mainmenuname),
                       submenulabel: cc.titleCase(cc.sentenceCase(pl(submenu.modelname))),
                       submenuname: cc.paramCase(pl(submenu.modelname))}
             m.submenus.push(submenu);
