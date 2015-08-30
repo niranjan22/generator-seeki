@@ -6,14 +6,23 @@ angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCaseP
 		$scope.authentication = Authentication;<% controller.lookups.forEach ( function (lookup) { %>
     $scope.<%= lookup.lookupname %> = <%= lookup.expression %><% }); %>
     
+    <% controller.methods.forEach ( function (method) { %>
+    <% if (method.methodtype === 'create') { %>
+    
 		// Create new <%= model.pascalCaseSingular %>
 		$scope.create = function() {
 			// Create new <%= model.pascalCaseSingular %> object
-			var <%= model.camelCaseSingular %> = new <%= model.pascalCasePlural %> ({<% model.elements.forEach(function(element) { %>
-        <%= element.elementname %>: this.<%= element.elementname %>,<% }); %>      
-        created: Date.now
-			});
-
+			var <%= model.camelCaseSingular %> = new <%= model.pascalCasePlural %> (this.<%= model.camelCaseSingular %>);
+      <% model.elements.forEach ( function (element) { %><% if (element.elementtype === 'Schema.Types.ObjectId') { %>
+      <%= model.camelCaseSingular %>.<%= element.elementname %> = <%= model.camelCaseSingular %>.<%= element.elementname %>._id;      
+      <% } %><% }) %>
+      <% model.elements.forEach ( function (element) { %><% if (element.elementtype === 'Nested') { %><% element.elements.forEach ( function (nestedelement) { %><% if (nestedelement.elementtype === 'Schema.Types.ObjectId') { %>
+        <%= model.camelCaseSingular %>.<%= element.elementname %>.forEach ( function (<%= element.elementNameSingular %>) {
+          <%= element.elementNameSingular %>.<%= nestedelement.elementname %> = <%= element.elementNameSingular %>.<%= nestedelement.elementname %>._id;
+        });      
+      <% } %><% }) %><% } %><% }) %>      
+      <%= model.camelCaseSingular %>.created = Date.now;
+      
 			// Redirect after save
 			<%= model.camelCaseSingular %>.$save(function(response) {
 				//$location.path('<%= model.paramCasePlural %>/' + response._id);
@@ -26,7 +35,9 @@ angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCaseP
 				$scope.error = errorResponse.data.message;
 			});
 		};
-
+    <% } %>
+    
+    <% if (method.methodtype === 'remove') { %>
 		// Remove existing <%= model.pascalCaseSingular %>
 		$scope.remove = function(<%= model.camelCaseSingular %>) {
 			if ( <%= model.camelCaseSingular %> ) { 
@@ -43,23 +54,37 @@ angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCaseP
 				});
 			}
 		};
-
+    <% } %>
+    
+    <% if (method.methodtype === 'update') { %>
 		// Update existing <%= model.pascalCaseSingular %>
 		$scope.update = function() {
 			var <%= model.camelCaseSingular %> = $scope.<%= model.camelCaseSingular %>;
-
+      <% model.elements.forEach ( function (element) { %><% if (element.elementtype === 'Schema.Types.ObjectId') { %>
+      <%= model.camelCaseSingular %>.<%= element.elementname %> = <%= model.camelCaseSingular %>.<%= element.elementname %>._id;      
+      <% } %><% }) %>
+      <% model.elements.forEach ( function (element) { %><% if (element.elementtype === 'Nested') { %><% element.elements.forEach ( function (nestedelement) { %><% if (nestedelement.elementtype === 'Schema.Types.ObjectId') { %>
+        <%= model.camelCaseSingular %>.<%= element.elementname %>.forEach ( function (<%= element.elementNameSingular %>) {
+          <%= element.elementNameSingular %>.<%= nestedelement.elementname %> = <%= element.elementNameSingular %>.<%= nestedelement.elementname %>._id;
+        });      
+      <% } %><% }) %><% } %><% }) %>      
+      
 			<%= model.camelCaseSingular %>.$update(function() {
 				$location.path('<%= model.paramCasePlural %>/' + <%= model.camelCaseSingular %>._id);
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
 		};
-
+    <% } %>
+    
+    <% if (method.methodtype === 'find') { %>
 		// Find a list of <%= model.pascalCasePlural %>
 		$scope.find = function() {
 			$scope.<%= model.camelCasePlural %> = <%= model.pascalCasePlural %>.query();
 		};
+    <% } %>
 
+    <% if (method.methodtype === 'findOne') { %>
 		// Find existing <%= model.pascalCaseSingular %>
 		$scope.findOne = function() {
       <%= model.pascalCasePlural %>.get({ 
@@ -72,7 +97,16 @@ angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCaseP
         console.log('Failed: ' + reason);
       });      
 		};
-    <% model.elements.forEach(function(element) { %><% if (element.elementtype === 'Nested') { %><% if (element.isarray === true) {%>
+    <% } %>
+    
+    <% if (method.methodtype === 'standAlone') { %>
+    $scope.<%= method.methodname %> = function () {
+      <%= method.methodcontent %>
+    };
+    <% } %>
+    
+    <% if (method.methodtype === 'Modal') { %>
+    <% model.elements.forEach(function(element) { %><% if (element.elementtype === 'Nested') { %><% if (element.isarray === true) {%><% if (method.methodname === element.elementname) { %>
     $scope.add<%= element.elementNameSingular %> = function () {
       var modalInstance = $modal.open({
         animation: false,
@@ -87,11 +121,14 @@ angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCaseP
         }
       });
       modalInstance.result.then(function (<%= element.elementNameSingular %>) {
-        $scope.<%= element.elementname %>.push(<%= element.elementNameSingular %>);
+        <%= method.methodcontent %>
+        $scope.<%= model.camelCaseSingular %>.<%= element.elementname %>.push(<%= element.elementNameSingular %>);
       }, function () {
         $log.info('Modal dismissed at: ' + new Date());
       });
-    };<% } %> <% } %> <% }); %>
+    };<% } %><% } %> <% } %> <% }); %>
+    <% } %>
+    <% }); %>
 	}
 ]);
 <% model.elements.forEach(function(element) { %><% if (element.elementtype === 'Nested' && element.isarray === true) { %>

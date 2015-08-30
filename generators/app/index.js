@@ -132,7 +132,7 @@ module.exports = generators.Base.extend({
                       return md;
                     }
                   })[0];
-                  nestedControl.options = m.camelCaseSingular + '._id as ' + m.camelCaseSingular + '.name for ' + m.camelCaseSingular + ' in ' + m.camelCasePlural;
+                  nestedControl.options = m.camelCaseSingular + ' as ' + m.camelCaseSingular + '.name for ' + m.camelCaseSingular + ' in ' + m.camelCasePlural;
                 }                
               });
             }
@@ -142,7 +142,7 @@ module.exports = generators.Base.extend({
                   return md;
                 }
               })[0];
-              control.options = m.camelCaseSingular + '._id as ' + m.camelCaseSingular + '.name for ' + m.camelCaseSingular + ' in ' + m.camelCasePlural;
+              control.options = m.camelCaseSingular + ' as ' + m.camelCaseSingular + '.name for ' + m.camelCaseSingular + ' in ' + m.camelCasePlural;
             }
             section.controls[cindex] = control;
           };

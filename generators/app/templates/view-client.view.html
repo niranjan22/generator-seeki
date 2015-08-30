@@ -18,30 +18,60 @@
   <!-- general form elements -->
   <div class="ibox float-e-margins"  data-ng-show="((authentication.user) && (authentication.user._id == <%= view.model.camelCaseSingular %>.user._id))">
     <div class="ibox-content">    
-      <div class="row"><% view.sections[0].controls.forEach(function(control) { %><% if (control.controltype === "Nested"){ %><% if (control.isarray){ %>
+      <div class="row">
+      <dl class="dl-horizontal">
+      <% view.sections[0].controls.forEach(function(control) { %>
+      <% if ( ["Text", "Number", "Select", "Date", "Boolean"].indexOf(control.controltype)>-1 ){ %>
+        <dt><%= control.controllabel %> </dt><dd>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %><%if(control.controltype == "Date"){ %> | date <% } %>}}</dd>
+      <% } %>
+      <% }) %>
+      </dl>
+      
+      <% view.sections[0].controls.forEach(function(control) { %>
+      <% if (control.controltype === "Nested"){ %>
+      <% if (control.isarray){ %>
         <div class="col-md-<%= control.width %> form-group">
           <label class="control-label" for="<%= control.controlname %>"><%= control.controllabel %></label>                
           <table class="table">
             <thead>
-            <tr><% control.nestedcontrols.forEach(function(nestedcontrol) { %>
-                <th><%= nestedcontrol.controllabel %></th><% }); %>
+            <tr>
+            <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
+             <% if ( ["Text", "Number", "Select", "Date", "Boolean"].indexOf(nestedcontrol.controltype)>-1 ){ %>
+                <th><%= nestedcontrol.controllabel %></th>
+            <% } %>
+            <% }); %>
             </tr>
             </thead>
             <tbody>
-            <tr data-ng-repeat="<%= control.modelelementSl %> in <%= control.modelelement %>"><% control.nestedcontrols.forEach(function(nestedcontrol) { %>
-              <td>{{ <%= control.modelelementSl %>.<%= nestedcontrol.controlname %> <% if(nestedcontrol.controltype == "Date"){ %> | date <% } %>}}</td><% }); %>
+                  <tr data-ng-repeat="<%= control.modelelementSl %> in <%= view.model.camelCaseSingular %>.<%= control.modelelement %>">
+            <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
+            <% if ( ["Text", "Number", "Select", "Date", "Boolean"].indexOf(nestedcontrol.controltype)>-1 ){ %>
+                    <td>{{ <%= control.modelelementSl %>.<%= nestedcontrol.controlname %> <% if(nestedcontrol.controltype == "Date"){ %> | date <% } %> }}</td>
+            <% } %>
+            <% }); %>
             </tr>
             </tbody>
+            <tfoot>
+            <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
+            <% if ( nestedcontrol.controltype === "Footer" ){ %>
+                          <td>{{ <%= view.model.camelCaseSingular %>.<%= nestedcontrol.modelelement %> }}</td>
+            <% } %>
+            <% }); %>            
+            </tfoot>
           </table>
-        </div><% } else { %>
+        </div>
+      <% } else { %>
         <div class="col-md-<%= control.width %> form-group">
-          <label class="control-label" for="<%= control.controlname %>"><%= control.controllabel %></label><% control.nestedcontrols.forEach(function(nestedcontrol) { %>
+          <label class="control-label" for="<%= control.controlname %>"><%= control.controllabel %></label>
+      <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
           <div class="col-md-<%= nestedcontrol.width %> form-group">
             <dt><%= nestedcontrol.controllabel %> </dt><dd>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelementSl %>.<%= nestedcontrol.modelelement %><%if(nestedcontrol.controltype == "Date"){ %> | date <% } %>}}</dd>
           </div>
-          <% }); %>
-        </div><% } %><% } else { %>
-        <dt><%= control.controllabel %> </dt><dd>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %><%if(control.controltype == "Date"){ %> | date <% } %>}}</dd><% } %><% }); %>
+      <% }); %>
+        </div>
+      <% } %>
+      <% } %>
+      <% }); %>
       </div>
       <div class="row">
         <div>
