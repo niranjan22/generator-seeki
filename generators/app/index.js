@@ -25,7 +25,7 @@ module.exports = generators.Base.extend({
       var models = [];
       
       project.models.push({name: 'User'});
-      
+      console.log('building models....');
       project.models.forEach ( function (model){
         var m = { name                  : model.name,
                   camelCaseSingular     : cc.camelCase(pl(model.name,1)),
@@ -39,14 +39,14 @@ module.exports = generators.Base.extend({
                   elements              : []
                 };
         if (model.elements) {
+          console.log('processing models, ', model.name);
           model.elements.forEach( function (element) {
-
+            console.log('processing element, ', element.elementname);
             if (element.elementtype === 'Nested') {
               var e = {};
               if (element.isarray === true) {
                 e = {elementname: element.elementname, elementtype: element.elementtype, isarray: element.isarray,
                 elementNameSingular: pl(element.elementname,1), elements: element.elements};
-
                 e.elements.forEach( function (ne) {
                   if (ne.elementtype === 'Schema.Types.ObjectId') {
                     var dmodelName = project.models.filter( function (ml) {
@@ -96,7 +96,7 @@ module.exports = generators.Base.extend({
         models.push(m);
       });
       
-      
+      console.log('generating models... ');
       //Generate model outputs
       for (var index in models) {
         var model = models[index];
@@ -106,9 +106,11 @@ module.exports = generators.Base.extend({
           {model: model});
       };
       
+      console.log('generating views...');
       //Generate view outputs
       for (var index in project.views) {
         var view = project.views[index];
+        console.log('processing view, ', view.viewname);
         var model = models.filter( function (m) {
           if (m.name === view.modelname) {
             return m;
@@ -119,6 +121,7 @@ module.exports = generators.Base.extend({
           var section = view.sections[sindex];
           for (var cindex in section.controls) {
             var control = section.controls[cindex];
+            console.log('processing control, ', control.controlname);
             if (control.controltype === 'Nested') {
               if (control.isarray === true) {
                 control.modelelementSl = pl(control.modelelement,1);
@@ -126,6 +129,7 @@ module.exports = generators.Base.extend({
               }
               
               control.nestedcontrols.forEach( function (nestedControl) {
+                console.log('processing nested control, ', nestedControl.controlname);
                 if (nestedControl.controltype === 'Select' && (nestedControl.modelname)) {
                   var m = models.filter( function (md) {
                     if (md.name === nestedControl.modelname) {
@@ -162,10 +166,11 @@ module.exports = generators.Base.extend({
         }
       };
 
-
+      console.log('generating controllers...');
       //Generate controllers
       for (var index in project.controllers) {
         var controller = project.controllers[index];
+        console.log('processing controller, ', controller.controllername);
         var model = models.filter(function (m) {
           if (m.name === controller.modelname) {
             return m;
@@ -185,8 +190,10 @@ module.exports = generators.Base.extend({
         );
       };
 
+      console.log('generating menus...');
       var menus = [];
       project.menus.forEach( function (menu) {
+        console.log('processing menu, ', menu.menuname);
         var m = {menuname: cc.lowerCase(menu.menuname),
         menulabel: cc.titleCase(menu.menulabel),
         submenus: []};
@@ -196,6 +203,7 @@ module.exports = generators.Base.extend({
                       submenulabel: cc.titleCase(cc.sentenceCase(pl(submenu.modelname))),
                       submenuname: cc.paramCase(pl(submenu.modelname))}
             m.submenus.push(submenu);
+            console.log('processing submenu, ', submenu.submenuname);
           }
         });
         menus.push(m);
