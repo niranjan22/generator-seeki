@@ -38,9 +38,9 @@
               <% view.sections[0].controls.forEach(function(control) { %>
               <th><%= control.controllabel %></th>
               <% }); %>
-              <th>V</th>
-              <th>E</th>
-              <th>D</th>
+              <th></th>
+<!--               <th>E</th>
+              <th>D</th> -->
           </tr>
           </thead>
           <tbody>
@@ -48,9 +48,9 @@
               <% view.sections[0].controls.forEach(function(control) { %>
               <td>{{ <%= view.model.camelCaseSingular %>.<%= control.controlname %> <% if(control.controltype == "Date"){ %> | date <% } %>}}</td>
               <% }); %>
-              <td><a class="glyphicon glyphicon-edit" href="/#!/<%= view.model.paramCasePlural %>/{{<%= view.model.camelCaseSingular %>._id}}"></a></td>
-              <td><a class="glyphicon glyphicon-edit" href="/#!/<%= view.model.paramCasePlural %>/{{<%= view.model.camelCaseSingular %>._id}}/edit"></a></td>
-              <td><a class="glyphicon glyphicon-edit" ng-click="remove(<%= view.model.camelCaseSingular %>)"></a></td>
+              <td><a class="glyphicon glyphicon-search" href="/#!/<%= view.model.paramCasePlural %>/{{<%= view.model.camelCaseSingular %>._id}}"></a></td>
+<!--               <td><a class="glyphicon glyphicon-edit" href="/#!/<%= view.model.paramCasePlural %>/{{<%= view.model.camelCaseSingular %>._id}}/edit"></a></td>
+              <td><a class="glyphicon glyphicon-trash" ng-click="remove(<%= view.model.camelCaseSingular %>)"></a></td> -->
           </tr>
           </tbody>
         </table>
