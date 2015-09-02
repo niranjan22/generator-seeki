@@ -76,10 +76,13 @@ module.exports = generators.Base.extend({
                 });
                 
               } else {
+                e = {elementname: element.elementname, elementtype: element.elementtype, isarray: element.isarray, elements: element.elements};
                 if (element.elementtype === 'Schema.Types.ObjectId') {
-                  element.schemaobjref = cc.pascalCase(pl(element.schemaobjref,1));
+                  e.schemaobjref = cc.pascalCase(pl(element.schemaobjref,1));
+                  e.camelCaseSchemaobjref = cc.camelCase(pl(element.schemaobjref));
+                  e.pascalCaseSchemaobjref = cc.pascalCase(pl(element.schemaobjref));                     
                 }
-                e = {elementname: element.elementname, elementtype: element.elementtype, schemaobjref: element.schemaobjref, isarray: element.isarray, elements: element.elements};
+                
               }
   /*             if (element.isarray === true) {
                 e.elementNameSingular = pl(element.elementname,1);
@@ -88,6 +91,8 @@ module.exports = generators.Base.extend({
             } else {
               if (element.elementtype === 'Schema.Types.ObjectId') {
                 element.schemaobjref = cc.pascalCase(pl(element.schemaobjref,1));
+                element.camelCaseSchemaobjref = cc.camelCase(pl(element.schemaobjref));
+                element.pascalCaseSchemaobjref = cc.pascalCase(pl(element.schemaobjref));                
               }            
               m.elements.push(element);
             }
