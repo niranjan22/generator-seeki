@@ -101,8 +101,18 @@ angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCaseP
       <%= model.pascalCasePlural %>.get({
 				<%= model.camelCaseSingular %>Id: $stateParams.<%= model.camelCaseSingular %>Id
 			})
-      .$promise.then(function(data) {<% model.elements.forEach(function(element) { %><% if(element.elementtype == "Date"){ %>
-        data.<%= element.elementname %> = $filter('date')(data.<%= element.elementname %>, 'yyyy-MM-dd');<% } %><% }); %>
+      .$promise.then(function(data) {<% model.elements.forEach(function(element) { %>
+        <% if(element.elementtype == "Date"){ %>
+        data.<%= element.elementname %> = $filter('date')(data.<%= element.elementname %>, 'yyyy-MM-dd');
+        <% } %>
+        <% if(element.elementtype == "Nested" && element.isarray === false){ %>
+        <% element.elements.forEach(function(nestedelement) { %>
+        <% if(nestedelement.elementtype == "Date"){ %>
+        data.<%= element.elementname %>.<%= nestedelement.elementname %> = $filter('date')(data.<%= element.elementname %>.<%= nestedelement.elementname %>, 'yyyy-MM-dd');
+        <% } %>
+        <% }); %>
+        <% } %>
+        <% }); %>
         $scope.<%= model.camelCaseSingular %> = data;
       }, function(reason) {
         console.log('Failed: ' + reason);

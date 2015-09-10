@@ -37,16 +37,16 @@
             <tr>
             <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
              <% if ( ["Text", "Number", "Select", "Date", "Boolean"].indexOf(nestedcontrol.controltype)>-1 ){ %>
-                <th><%= nestedcontrol.controllabel %></th>
+            <th><%= nestedcontrol.controllabel %></th>
             <% } %>
             <% }); %>
             </tr>
             </thead>
             <tbody>
-                  <tr data-ng-repeat="<%= control.modelelementSl %> in <%= view.model.camelCaseSingular %>.<%= control.modelelement %>">
+            <tr data-ng-repeat="<%= control.modelelementSl %> in <%= view.model.camelCaseSingular %>.<%= control.modelelement %>">
             <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
             <% if ( ["Text", "Number", "Select", "Date", "Boolean"].indexOf(nestedcontrol.controltype)>-1 ){ %>
-                    <td>{{ <%= control.modelelementSl %>.<%= nestedcontrol.controlname %> <% if(nestedcontrol.controltype == "Date"){ %> | date <% } %> }}</td>
+            <td>{{ <%= control.modelelementSl %>.<%= nestedcontrol.controlname %> <% if(nestedcontrol.controltype == "Date"){ %> | date <% } %> }}</td>
             <% } %>
             <% }); %>
             </tr>
@@ -54,7 +54,7 @@
             <tfoot>
             <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
             <% if ( nestedcontrol.controltype === "Footer" ){ %>
-                          <td>{{ <%= view.model.camelCaseSingular %>.<%= nestedcontrol.modelelement %> }}</td>
+            <td>{{ <%= view.model.camelCaseSingular %>.<%= nestedcontrol.modelelement %> }}</td>
             <% } %>
             <% }); %>            
             </tfoot>
@@ -62,13 +62,13 @@
         </div>
       <% } else { %>
         <div class="col-md-<%= control.width %> form-group">
-          <label class="control-label" for="<%= control.controlname %>"><%= control.controllabel %></label>
+          <span><%= control.controllabel %></span>
+        </div>          
+        <dl class="dl-horizontal">
       <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
-          <div class="col-md-<%= nestedcontrol.width %> form-group">
-            <dt><%= nestedcontrol.controllabel %> </dt><dd>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelementSl %>.<%= nestedcontrol.modelelement %><%if(nestedcontrol.controltype == "Date"){ %> | date <% } %>}}</dd>
-          </div>
+        <dt><%= nestedcontrol.controllabel %> </dt><dd>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= nestedcontrol.modelelement %><%if(nestedcontrol.controltype == "Date"){ %> | date <% } %>}}</dd>
       <% }); %>
-        </div>
+      </dl>
       <% } %>
       <% } %>
       <% }); %>

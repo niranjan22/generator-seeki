@@ -9,12 +9,25 @@ var mongoose = require('mongoose'),
 /**
  * <%= model.pascalCaseSingular %> Schema
  */
-var <%= model.pascalCaseSingular %>Schema = new Schema({<% model.elements.forEach(function(element) { %><% if ( element.elementtype === 'Schema.Types.ObjectId' ) { %>
-  <%= element.elementname %>: {type: <%= element.elementtype %>, ref: '<%= element.schemaobjref %>'},<% } else if (element.elementtype === 'Nested') { %>
-  <%= element.elementname %>: [{<% element.elements.forEach(function(nestedelement) { %><% if ( nestedelement.elementtype === 'Schema.Types.ObjectId' ) { %>
-  <%= nestedelement.elementname %>:{type: <%= nestedelement.elementtype %>, ref: '<%= nestedelement.schemaobjref %>'},<% } else { %>
-  <%= nestedelement.elementname %>: <%= nestedelement.elementtype %>,<% } %><% }); %>}],<% } else { %>
-  <%= element.elementname %>: <%= element.elementtype %>,<% } %><% }); %>
+var <%= model.pascalCaseSingular %>Schema = new Schema({<% model.elements.forEach(function(element) { %>
+  <% if ( element.elementtype === 'Schema.Types.ObjectId' ) { %>
+      <%= element.elementname %>: {type: <%= element.elementtype %>, ref: '<%= element.schemaobjref %>'},
+    <% } else if (element.elementtype === 'Nested') { %>
+  
+      <%= element.elementname %>: <% if (element.isarray === true){%>[<% } %>{
+      <% element.elements.forEach(function(nestedelement) { %>
+      <% if ( nestedelement.elementtype === 'Schema.Types.ObjectId' ) { %>
+      <%= nestedelement.elementname %>:{type: <%= nestedelement.elementtype %>, ref: '<%= nestedelement.schemaobjref %>'},
+      <% } else { %>
+      <%= nestedelement.elementname %>: <%= nestedelement.elementtype %>,
+      <% } %>
+      <% }); %>
+      }<% if (element.isarray === true){%>]<% } %>,
+      
+    <% } else { %>
+      <%= element.elementname %>: <%= element.elementtype %>,
+    <% } %>
+    <% }); %>
 	created: {type: Date, default: Date.now},
 	user: {
 		type: Schema.ObjectId,
