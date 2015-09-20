@@ -147,7 +147,13 @@ angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCaseP
       }, function () {
         $log.info('Modal dismissed at: ' + new Date());
       });
-    };<% } %><% } %> <% } %> <% }); %>
+    };
+    
+    $scope.remove<%= element.elementNameSingular %> = function (index) {
+      $scope.<%= model.camelCaseSingular %>.<%= element.elementname %>.splice(index,1);
+    };
+    
+    <% } %><% } %> <% } %> <% }); %>
     <% } %>
     <% }); %>
 	}
