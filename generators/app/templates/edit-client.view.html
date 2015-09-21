@@ -1,7 +1,7 @@
 <section data-ng-controller="<%= view.model.pascalCasePlural %>Controller" data-ng-init="findOne()">
   <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-      <h2><%= view.viewname %></h2>
+      <h2>Update <%= view.model.titleCaseSingular %></h2>
         <ol class="breadcrumb">
           <li>
             <a href="#!/">Home</a>
@@ -10,7 +10,7 @@
             <a href="#!/<%= view.model.paramCasePlural %>"><%= view.model.pascalCasePlural %></a>
           </li>
           <li class="active">
-            <strong><%= view.viewname %></strong>
+            <strong><%= view.model.titleCasePlural %></strong>
           </li> 
         </ol>            
     </div>
@@ -30,7 +30,7 @@
                 <select id="<%= control.controlname %>" class="form-control" 
                   ng-model="<%= view.model.camelCaseSingular %>.<%= control.modelelement %>._id" 
                   ng-required="true" 
-                  ng-options="<%= control.options %>" />
+                  ng-options="<%= control.optionsEdit %>" />
                 <% } else {%>
                 <input type="<%= control.controltype %>" ng-model="<%= view.model.camelCaseSingular %>.<%= control.modelelement %>" id="<%= control.controlname %>" class="form-control" placeholder="<%= control.exampletext %>" required />
                 <% } %> 
@@ -51,9 +51,9 @@
                       <label class="control-label" for="<%= nestedcontrol.controlname %>"><%= nestedcontrol.controllabel %></label>
                     <% if(nestedcontrol.controltype==="Select") {%>
                       <select id="<%= nestedcontrol.controlname %>" class="form-control" 
-                        ng-model="<%= control.modelelementSl %>.<%= nestedcontrol.modelelement %>._id" 
+                        ng-model="<%= control.modelelementSl %>.<%= nestedcontrol.modelelement %>" 
                         ng-required="true" 
-                        ng-options="<%= nestedcontrol.options %>" />
+                        ng-options="<%= nestedcontrol.optionsCreate %>" />
                     <% } else {%>
                       <input type="<%= nestedcontrol.controltype %>" ng-model="<%= control.modelelementSl %>.<%= nestedcontrol.modelelement %>" id="<%= nestedcontrol.controlname %>" class="form-control" placeholder="<%= nestedcontrol.exampletext %>" required />
                     <% } %>
@@ -87,13 +87,13 @@
                     <td>{{ <%= control.modelelementSl %>.<%= nestedcontrol.controlname %> <% if(nestedcontrol.controltype == "Date"){ %> | date <% } %>}}</td>
                     <% } %>
                   <% }); %>
-                    <td><a ng-click="remove<%= control.modelelementSl %>($index)" class="glyphicon glyphicon-trash"></a></td>
+                    
                   </tr>
                   </tbody>
                   <tfoot>
                   <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
                   <% if ( nestedcontrol.controltype === "Footer" ){ %>
-                          <td>{{ <%= view.model.camelCaseSingular %>.<%= nestedcontrol.modelelement %> }}</td>
+                    <td>{{ <%= view.model.camelCaseSingular %>.<%= nestedcontrol.modelelement %> }}</td>
                   <% } %>
                   <% }); %>            
                   </tfoot>
@@ -112,7 +112,7 @@
                   <select id="<%= nestedcontrol.controlname %>" class="form-control" 
                   ng-model="<%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= nestedcontrol.modelelement %>._id" 
                     ng-required="true" 
-                    ng-options="<%= nestedcontrol.options %>" />
+                    ng-options="<%= nestedcontrol.optionsEdit %>" />
                   <% } else {%>
                 <input type="<%= nestedcontrol.controltype %>" ng-model="<%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= nestedcontrol.modelelement %>" id="<%= nestedcontrol.controlname %>" class="form-control" placeholder="<%= nestedcontrol.exampletext %>" required />
                   <% } %>
@@ -136,4 +136,27 @@
       </div>
     </div>
   </div>
+  <% view.sections[0].controls.forEach(function(control) { %>
+    <% if ( ["File"].indexOf(control.controltype)>-1 ){ %>
+      <div class="col-md-3" >
+        <div class="ibox float-e-margins" >
+          <div class="ibox-content">    
+            <div class="row">
+              <div data-ng-controller="FilemonkeysController" class="btn btn-primary btn-block" 
+                    ngf-select="uploadFiles($files,<%= view.model.camelCaseSingular %>)"
+                    multiple="multiple">
+                    Upload Files
+              </div>   
+              <ul class="list-group">
+                <li class="list-group-item" ng-repeat="file in <%= view.model.camelCaseSingular %>.<%= control.modelelement %>">
+                  {{file.filename}}
+                  <a data-ng-controller="FilemonkeysController" ng-click="removefile(file._id, $index, <%= view.model.camelCaseSingular %>)" class="glyphicon glyphicon-trash"></a>
+                </li>        
+              </ul>           
+            </div>
+          </div><!-- /.ibox-content -->
+        </div><!-- /.ibox -->
+      </div>      
+    <% } %>  
+  <% }); %>
 </section>

@@ -1,13 +1,13 @@
 <section data-ng-controller="<%= view.model.pascalCasePlural %>Controller" data-ng-init="find()">
   <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-      <h2><%= view.viewname %></h2>
+      <h2>List <%= view.model.titleCasePlural %></h2>
       <ol class="breadcrumb">
         <li>
           <a href="#!/">Home</a>
         </li>
         <li class="active">
-          <strong><%= view.viewname %></strong>
+          <strong><%= view.model.titleCasePlural %></strong>
         </li>
       </ol>
     </div>
@@ -46,7 +46,11 @@
           <tbody>
           <tr data-ng-repeat="<%= view.model.camelCaseSingular %> in <%= view.model.camelCasePlural %> | filter: searchtext">
               <% view.sections[0].controls.forEach(function(control) { %>
-              <td>{{ <%= view.model.camelCaseSingular %>.<%= control.controlname %> <% if(control.controltype == "Date"){ %> | date <% } %>}}</td>
+              <% if (control.controltype =="Select"){%>
+              <td>{{ <%= view.model.camelCaseSingular %>.<%= control.displayelement %></td>
+              <% } else { %>
+              <td>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %> <% if(control.controltype == "Date"){ %> | date <% } %>}}</td>
+              <% } %>
               <% }); %>
               <td><a class="glyphicon glyphicon-search" href="/#!/<%= view.model.paramCasePlural %>/{{<%= view.model.camelCaseSingular %>._id}}"></a></td>
 <!--               <td><a class="glyphicon glyphicon-edit" href="/#!/<%= view.model.paramCasePlural %>/{{<%= view.model.camelCaseSingular %>._id}}/edit"></a></td>

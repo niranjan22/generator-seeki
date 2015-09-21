@@ -5,7 +5,7 @@ angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCaseP
  	function($scope, $modal, $stateParams, $location, $log, $filter, Authentication, <%= model.pascalCasePlural %><% if( controller.services.length > 0 ) { controller.services.forEach ( function (service) { %>, <%= service %><% }); } %>) {
 		$scope.authentication = Authentication;<% controller.lookups.forEach ( function (lookup) { %>
     $scope.<%= lookup.lookupname %> = <%= lookup.expression %><% }); %>
-
+    //bookmark
     $scope.<%= model.camelCaseSingular %>={};
     <% model.elements.forEach(function(element) { %><% if (element.elementtype === 'Nested') { %><% if (element.isarray === true) {%>
     $scope.<%= model.camelCaseSingular %>.<%= element.elementname %>=[];

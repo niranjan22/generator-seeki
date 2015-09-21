@@ -35,6 +35,8 @@ module.exports = generators.Base.extend({
                   pascalCaseSingular    : cc.pascalCase(pl(model.name,1)),
                   pascalCasePlural      : cc.pascalCase(pl(model.name)),
                   upperCaseFirstSingular: cc.upperCaseFirst(pl(model.name,1)),
+                  titleCaseSingular     : cc.titleCase(pl(model.name,1)),
+                  titleCasePlural       : cc.titleCase(pl(model.name)),
                   upperCaseFirstPlural  : cc.upperCaseFirst(pl(model.name)),
                   elements              : []
                 };
@@ -111,6 +113,16 @@ module.exports = generators.Base.extend({
           {model: model});
       };
       
+      console.log('generating server controller... ');
+      //Generate server controller outputs
+      for (var index in models) {
+        var model = models[index];
+        this.fs.copyTpl(
+          this.templatePath('server.controller.js'),
+          this.destinationPath(project.name + '/app/controllers/' + model.paramCasePlural + '.server.controller.js'),
+          {model: model});
+      };      
+      
       console.log('generating views...');
       //Generate view outputs
       for (var index in project.views) {
@@ -141,7 +153,8 @@ module.exports = generators.Base.extend({
                       return md;
                     }
                   })[0];
-                  nestedControl.options = m.camelCaseSingular + ' as ' + m.camelCaseSingular + '.name for ' + m.camelCaseSingular + ' in ' + m.camelCasePlural;
+                  nestedControl.optionsCreate = m.camelCaseSingular + ' as ' + m.camelCaseSingular + '.name for ' + m.camelCaseSingular + ' in ' + m.camelCasePlural;
+                  nestedControl.optionsEdit = m.camelCaseSingular + '._id as ' + m.camelCaseSingular + '.name for ' + m.camelCaseSingular + ' in ' + m.camelCasePlural;
                 }                
               });
             }
@@ -151,7 +164,15 @@ module.exports = generators.Base.extend({
                   return md;
                 }
               })[0];
-              control.options = m.camelCaseSingular + ' as ' + m.camelCaseSingular + '.name for ' + m.camelCaseSingular + ' in ' + m.camelCasePlural;
+              
+              var displayelement = '';
+              if(control.displayelement){
+                displayelement = control.displayelement;
+              }else{
+                displayelement = 'name';
+              }
+              control.optionsCreate = m.camelCaseSingular + ' as ' + m.camelCaseSingular + '.' + control.displayelement + ' for ' + m.camelCaseSingular + ' in ' + m.camelCasePlural;
+              control.optionsEdit = m.camelCaseSingular + '._id as ' + m.camelCaseSingular + '.' + control.displayelement + ' for ' + m.camelCaseSingular + ' in ' + m.camelCasePlural;
             }
             section.controls[cindex] = control;
           };
@@ -171,7 +192,7 @@ module.exports = generators.Base.extend({
         }
       };
 
-      console.log('generating controllers...');
+      console.log('generating client controllers...');
       //Generate controllers
       for (var index in project.controllers) {
         var controller = project.controllers[index];

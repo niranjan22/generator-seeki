@@ -1,7 +1,7 @@
 <section data-ng-controller="<%= view.model.pascalCasePlural %>Controller" data-ng-init="findOne()">
   <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-      <h2><%= view.viewname %></h2>
+      <h2>View <%= view.model.titleCaseSingular %></h2>
         <ol class="breadcrumb">
           <li>
             <a href="#!/">Home</a>
@@ -10,7 +10,7 @@
             <a href="#!/<%= view.model.paramCasePlural %>"><%= view.model.pascalCasePlural %></a>
           </li>
           <li class="active">
-            <strong><%= view.viewname %></strong>
+            <strong><%= view.model.titleCasePlural %></strong>
           </li> 
         </ol>            
     </div>
@@ -22,8 +22,11 @@
       <div class="row">
       <dl class="dl-horizontal">
       <% view.sections[0].controls.forEach(function(control) { %>
-      <% if ( ["Text", "Number", "Select", "Date", "Boolean"].indexOf(control.controltype)>-1 ){ %>
+      <% if ( ["Text", "Number", "Date", "Boolean"].indexOf(control.controltype)>-1 ){ %>
         <dt><%= control.controllabel %> </dt><dd>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %><%if(control.controltype == "Date"){ %> | date <% } %>}}</dd>
+      <% } %>
+      <% if ( control.controltype === "Select" ){ %>
+        <dt><%= control.controllabel %> </dt><dd>{{ <%= view.model.camelCaseSingular %>.<%= control.displayelement %>}}</dd>
       <% } %>
       <% }) %>
       </dl>
@@ -86,4 +89,22 @@
       </div>
     </div><!-- /.ibox-content -->
   </div><!-- /.ibox -->
+  <% view.sections[0].controls.forEach(function(control) { %>
+    <% if ( ["File"].indexOf(control.controltype)>-1 ){ %>
+      <div class="col-md-3" >
+        <div class="ibox float-e-margins" >
+          <div class="ibox-content">    
+            <div class="row">
+              <ul class="list-group">
+                <li class="list-group-item" ng-repeat="file in <%= view.model.camelCaseSingular %>.<%= control.modelelement %>">
+                  {{file.filename}}
+                  <a data-ng-controller="FilemonkeysController" ng-click="removefile(file._id, $index, <%= view.model.camelCaseSingular %>)" class="glyphicon glyphicon-trash"></a>
+                </li>        
+              </ul>           
+            </div>
+          </div><!-- /.ibox-content -->
+        </div><!-- /.ibox -->
+      </div>      
+    <% } %>  
+  <% }); %>  
 <section>
