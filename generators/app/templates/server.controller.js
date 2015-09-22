@@ -73,8 +73,28 @@ exports.delete = function(req, res) {
  * List of <%= model.titleCasePlural %>
  */
 exports.list = function(req, res) { 
-  var populateQuery = [{path:'user', select:'displayName'}];<% model.elements.forEach ( function (element) { %><% if (element.elementtype ==='Schema.Types.ObjectId') { %>
-  populateQuery.push({path: '<%= element.elementname %>', select: '<%= element.populateelements.join(' ') %>' });<% } %><% }); %>
+
+  var populateQuery = [{path:'user', select:'displayName'}];
+  <% model.elements.forEach ( function (element) { %>
+  <% if (element.elementtype ==='Schema.Types.ObjectId') { %>
+  <% if(element.populateelements) { %>
+  populateQuery.push({path: '<%= element.elementname %>', select: '<%= element.populateelements.join(' ') %>' });
+  <% } else { %>
+  populateQuery.push({path: '<%= element.elementname %>', select: 'name' });
+  <% } %>
+  <% } %>
+  <% if (element.elementtype ==='Nested') { %>
+  <% element.elements.forEach ( function (nestedelement) { %>
+  <% if (nestedelement.elementtype ==='Schema.Types.ObjectId') { %>
+  <% if(nestedelement.populateelements) { %>
+  populateQuery.push({path: '<%= element.elementname %>.<%= nestedelement.elementname %>', select: '<%= nestedelement.populateelements.join(' ') %>' });
+  <% } else { %>
+  populateQuery.push({path: '<%= element.elementname %>.<%= nestedelement.elementname %>', select: 'name' });
+  <% } %>
+  <% } %>
+  <% }); %>
+  <% } %>
+  <% }); %>
   
 	<%= model.pascalCaseSingular %>.find().sort('-created').populate(populateQuery).exec(function(err, <%= model.camelCasePlural %>) {
 		if (err) {
@@ -92,8 +112,27 @@ exports.list = function(req, res) {
  */
 exports.<%= model.camelCaseSingular %>ByID = function(req, res, next, id) { 
   
-  var populateQuery = [{path:'user', select:'displayName'}];<% model.elements.forEach ( function (element) { %><% if (element.elementtype ==='Schema.Types.ObjectId') { %>
-  populateQuery.push({path: '<%= element.elementname %>', select: '<%= element.populateelements.join(' ') %>' });<% } %><% }); %>
+  var populateQuery = [{path:'user', select:'displayName'}];
+  <% model.elements.forEach ( function (element) { %>
+  <% if (element.elementtype ==='Schema.Types.ObjectId') { %>
+  <% if(element.populateelements) { %>
+  populateQuery.push({path: '<%= element.elementname %>', select: '<%= element.populateelements.join(' ') %>' });
+  <% } else { %>
+  populateQuery.push({path: '<%= element.elementname %>', select: 'name' });
+  <% } %>
+  <% } %>
+  <% if (element.elementtype ==='Nested') { %>
+  <% element.elements.forEach ( function (nestedelement) { %>
+  <% if (nestedelement.elementtype ==='Schema.Types.ObjectId') { %>
+  <% if(nestedelement.populateelements) { %>
+  populateQuery.push({path: '<%= element.elementname %>.<%= nestedelement.elementname %>', select: '<%= nestedelement.populateelements.join(' ') %>' });
+  <% } else { %>
+  populateQuery.push({path: '<%= element.elementname %>.<%= nestedelement.elementname %>', select: 'name' });
+  <% } %>
+  <% } %>
+  <% }); %>
+  <% } %>
+  <% }); %>
   
 	<%= model.pascalCaseSingular %>.findById(id).populate(populateQuery).exec(function(err, <%= model.camelCaseSingular %>) {
 		if (err) return next(err);
