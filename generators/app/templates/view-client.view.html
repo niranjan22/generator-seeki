@@ -73,7 +73,11 @@
         </div>          
         <dl class="dl-horizontal">
       <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
+      <% if ( nestedcontrol.controltype === "Select" ){ %>
+        <dt><%= nestedcontrol.controllabel %> </dt><dd>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= nestedcontrol.modelelement %>.<%= nestedcontrol.displayelement %>}}</dd>
+      <% } else {%>      
         <dt><%= nestedcontrol.controllabel %> </dt><dd>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= nestedcontrol.modelelement %><%if(nestedcontrol.controltype == "Date"){ %> | date <% } %>}}</dd>
+      <% }%>      
       <% }); %>
       </dl>
       <% } %>

@@ -110,7 +110,7 @@
                 <label class="control-label" for="<%= nestedcontrol.controlname %>"><%= nestedcontrol.controllabel %></label>
                 <% if(nestedcontrol.controltype==="Select") {%>
                 <select id="<%= nestedcontrol.controlname %>" class="form-control" 
-                  ng-model="<%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= nestedcontrol.modelelement %>._id" 
+                  ng-model="<%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= nestedcontrol.modelelement %>" 
                   ng-required="true" 
                   ng-options="<%= nestedcontrol.optionsCreate %>" />
                 <% } else {%>

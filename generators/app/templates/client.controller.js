@@ -14,8 +14,8 @@ angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCaseP
     <% } %><% } %><% }); %>
 
     <% model.elements.forEach(function(element) { %><% if (element.elementtype === 'Schema.Types.ObjectId') { %>
-    $scope.<%= element.camelCaseSchemaobjref %>=<%= element.pascalCaseSchemaobjref %>.query();
-    <% } %><% }); %>
+    $scope.<%= element.camelCaseSchemaobjref %>=<%= element.pascalCaseSchemaobjref %>.query();<% } %><% if (element.elementtype === 'Nested' && element.isarray === false) { %>
+    <%= element.resolveLookups %><% } %><% }); %>
 
     <% controller.methods.forEach ( function (method) { %>
     <% if (method.methodtype === 'create') { %>
@@ -24,14 +24,34 @@ angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCaseP
 		$scope.create = function() {
 			// Create new <%= model.pascalCaseSingular %> object
 			var <%= model.camelCaseSingular %> = new <%= model.pascalCasePlural %> (this.<%= model.camelCaseSingular %>);
+      
+      
+      
+      
       <% model.elements.forEach ( function (element) { %><% if (element.elementtype === 'Schema.Types.ObjectId') { %>
       <%= model.camelCaseSingular %>.<%= element.elementname %> = <%= model.camelCaseSingular %>.<%= element.elementname %>._id;
       <% } %><% }) %>
-      <% model.elements.forEach ( function (element) { %><% if (element.elementtype === 'Nested') { %><% element.elements.forEach ( function (nestedelement) { %><% if (nestedelement.elementtype === 'Schema.Types.ObjectId') { %>
+      
+      <% model.elements.forEach ( function (element) { %>
+      <% if (element.elementtype === 'Nested') { %>
+      <% if (element.isarray === true) { %>
+      <% element.elements.forEach ( function (nestedelement) { %>
+      <% if (nestedelement.elementtype === 'Schema.Types.ObjectId') { %>
         <%= model.camelCaseSingular %>.<%= element.elementname %>.forEach ( function (<%= element.elementNameSingular %>) {
           <%= element.elementNameSingular %>.<%= nestedelement.elementname %> = <%= element.elementNameSingular %>.<%= nestedelement.elementname %>._id;
         });
-      <% } %><% }) %><% } %><% }) %>
+      <% } %>
+      <% }) %>
+      <% } else { %>      
+      <% element.elements.forEach ( function (nestedelement) { %>
+      <% if (nestedelement.elementtype === 'Schema.Types.ObjectId') { %>
+      <%= model.camelCaseSingular %>.<%= element.elementname %>.<%= nestedelement.elementname %> = <%= model.camelCaseSingular %>.<%= element.elementname %>.<%= nestedelement.elementname %>._id;
+      <% } %>
+      <% }) %>
+      <% } %>      
+      <% } %>
+      <% }) %>
+      
       <%= model.camelCaseSingular %>.created = Date.now;
 
 			// Redirect after save
@@ -71,14 +91,41 @@ angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCaseP
 		// Update existing <%= model.pascalCaseSingular %>
 		$scope.update = function() {
 			var <%= model.camelCaseSingular %> = $scope.<%= model.camelCaseSingular %>;
+      
+      
+      
+      
       <% model.elements.forEach ( function (element) { %><% if (element.elementtype === 'Schema.Types.ObjectId') { %>
       <%= model.camelCaseSingular %>.<%= element.elementname %> = <%= model.camelCaseSingular %>.<%= element.elementname %>._id;
       <% } %><% }) %>
-      <% model.elements.forEach ( function (element) { %><% if (element.elementtype === 'Nested') { %><% element.elements.forEach ( function (nestedelement) { %><% if (nestedelement.elementtype === 'Schema.Types.ObjectId') { %>
+      
+      
+      <% model.elements.forEach ( function (element) { %>
+      <% if (element.elementtype === 'Nested') { %>
+      <% if (element.isarray === true) { %>
+      <% element.elements.forEach ( function (nestedelement) { %>
+      <% if (nestedelement.elementtype === 'Schema.Types.ObjectId') { %>
         <%= model.camelCaseSingular %>.<%= element.elementname %>.forEach ( function (<%= element.elementNameSingular %>) {
           <%= element.elementNameSingular %>.<%= nestedelement.elementname %> = <%= element.elementNameSingular %>.<%= nestedelement.elementname %>._id;
         });
-      <% } %><% }) %><% } %><% }) %>
+      <% } %>
+      <% }) %>
+      <% } else { %>      
+      <% element.elements.forEach ( function (nestedelement) { %>
+      <% if (nestedelement.elementtype === 'Schema.Types.ObjectId') { %>
+      <%= model.camelCaseSingular %>.<%= element.elementname %>.<%= nestedelement.elementname %> = <%= model.camelCaseSingular %>.<%= element.elementname %>.<%= nestedelement.elementname %>._id;
+      <% } %>
+      <% }) %>
+      <% } %>      
+      <% } %>
+      <% }) %>
+      
+      
+      
+      
+      
+      
+      
 
 			<%= model.camelCaseSingular %>.$update(function() {
 				$location.path('<%= model.paramCasePlural %>/' + <%= model.camelCaseSingular %>._id);

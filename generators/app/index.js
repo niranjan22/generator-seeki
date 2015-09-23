@@ -91,6 +91,12 @@ module.exports = generators.Base.extend({
                     ne.camelCaseSchemaobjref = cc.camelCase(pl(dmodelName));
                     ne.pascalCaseSchemaobjref = cc.pascalCase(pl(dmodelName));
                   }
+                });  
+                e.resolveLookups = '';
+                e.elements.forEach( function (ne) {
+                  if (ne.elementtype === 'Schema.Types.ObjectId') {
+                    e.resolveLookups = e.resolveLookups + '\n $scope.' + ne.camelCaseSchemaobjref + ' = ' + ne.pascalCaseSchemaobjref + '.query();'
+                  }
                 });                
                 
               }
