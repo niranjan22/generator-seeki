@@ -89,9 +89,8 @@
                     <% if ( nestedcontrol.controltype === "Select" ){ %>
                     <td>{{ <%= control.modelelementSl %>.<%= nestedcontrol.modelelement %>.<%= nestedcontrol.displayelement %> }}</td>
                     <% } %>   
-                    
                   <% }); %>
-                    
+                    <td><a ng-click="remove<%= control.modelelementSl %>($index)" class="glyphicon glyphicon-trash"></a></td>
                   </tr>
                   </tbody>
                   <tfoot>
