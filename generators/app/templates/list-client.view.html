@@ -47,9 +47,9 @@
           <tr data-ng-repeat="<%= view.model.camelCaseSingular %> in <%= view.model.camelCasePlural %> | filter: searchtext">
               <% view.sections[0].controls.forEach(function(control) { %>
               <% if (control.controltype =="Select"){%>
-              <td>{{ <%= view.model.camelCaseSingular %>.<%= control.displayelement %></td>
+              <td>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= control.displayelement %> }}</td>
               <% } else { %>
-              <td>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %> <% if(control.controltype == "Date"){ %> | date <% } %>}}</td>
+              <td>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %> <% if(control.controltype == "Date"){ %> | date <% } %> }}</td>
               <% } %>
               <% }); %>
               <td><a class="glyphicon glyphicon-search" href="/#!/<%= view.model.paramCasePlural %>/{{<%= view.model.camelCaseSingular %>._id}}"></a></td>

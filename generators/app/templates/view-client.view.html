@@ -26,7 +26,7 @@
         <dt><%= control.controllabel %> </dt><dd>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %><%if(control.controltype == "Date"){ %> | date <% } %>}}</dd>
       <% } %>
       <% if ( control.controltype === "Select" ){ %>
-        <dt><%= control.controllabel %> </dt><dd>{{ <%= view.model.camelCaseSingular %>.<%= control.displayelement %>}}</dd>
+        <dt><%= control.controllabel %> </dt><dd>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= control.displayelement %>}}</dd>
       <% } %>
       <% }) %>
       </dl>
