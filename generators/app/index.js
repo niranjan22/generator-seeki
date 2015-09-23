@@ -115,20 +115,24 @@ module.exports = generators.Base.extend({
       //Generate model outputs
       for (var index in models) {
         var model = models[index];
-        this.fs.copyTpl(
-          this.templatePath('server.model.js'),
-          this.destinationPath(project.name + '/app/models/' + model.paramCaseSingular + '.server.model.js'),
-          {model: model});
+        if (model.name !== 'User'){
+          this.fs.copyTpl(
+            this.templatePath('server.model.js'),
+            this.destinationPath(project.name + '/app/models/' + model.paramCaseSingular + '.server.model.js'),
+            {model: model});
+        }
       };
       
       console.log('generating server controller... ');
       //Generate server controller outputs
       for (var index in models) {
         var model = models[index];
-        this.fs.copyTpl(
-          this.templatePath('server.controller.js'),
-          this.destinationPath(project.name + '/app/controllers/' + model.paramCasePlural + '.server.controller.js'),
-          {model: model});
+        if (model.name !== 'User'){
+          this.fs.copyTpl(
+            this.templatePath('server.controller.js'),
+            this.destinationPath(project.name + '/app/controllers/' + model.paramCasePlural + '.server.controller.js'),
+            {model: model});
+        }
       };      
       
       console.log('generating views...');
