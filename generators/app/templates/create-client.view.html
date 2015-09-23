@@ -81,9 +81,12 @@
                   <tbody>
                   <tr data-ng-repeat="<%= control.modelelementSl %> in <%= view.model.camelCaseSingular %>.<%= control.modelelement %>">
                     <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
-                    <% if ( ["Text", "Number", "Select", "Date", "Boolean"].indexOf(nestedcontrol.controltype)>-1 ){ %>
-                    <td>{{ <%= control.modelelementSl %>.<%= nestedcontrol.controlname %> <% if(nestedcontrol.controltype == "Date"){ %> | date <% } %>}}</td>
+                    <% if ( ["Text", "Number", "Date", "Boolean"].indexOf(nestedcontrol.controltype)>-1 ){ %>
+                    <td>{{ <%= control.modelelementSl %>.<%= nestedcontrol.modelelement %> <% if(nestedcontrol.controltype == "Date"){ %> | date <% } %>}}</td>
                     <% } %>
+                    <% if ( nestedcontrol.controltype === "Select" ){ %>
+                    <td>{{ <%= control.modelelementSl %>.<%= nestedcontrol.modelelement %>.<%= nestedcontrol.displayelement %> }}</td>
+                    <% } %>                    
                     <% }); %>
                     <td><a ng-click="remove<%= control.modelelementSl %>($index)" class="glyphicon glyphicon-trash"></a></td>
                   </tr>

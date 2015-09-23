@@ -78,12 +78,20 @@ module.exports = generators.Base.extend({
                 });
                 
               } else {
-                e = {elementname: element.elementname, elementtype: element.elementtype, isarray: element.isarray, elements: element.elements};
-                if (element.elementtype === 'Schema.Types.ObjectId') {
-                  e.schemaobjref = cc.pascalCase(pl(element.schemaobjref,1));
-                  e.camelCaseSchemaobjref = cc.camelCase(pl(element.schemaobjref));
-                  e.pascalCaseSchemaobjref = cc.pascalCase(pl(element.schemaobjref));                     
-                }
+                e = {elementname: element.elementname, elementtype: element.elementtype, elementNameSingular: pl(element.elementname,1), isarray: false, elements: element.elements};
+                e.elements.forEach( function (ne) {
+                  if (ne.elementtype === 'Schema.Types.ObjectId') {
+                    var dmodelName = project.models.filter( function (ml) {
+                      if (ne.schemaobjref === ml.name){
+                        return ml;
+                      }
+                    })[0].name;
+                    
+                    ne.schemaobjref = cc.pascalCase(pl(dmodelName,1));
+                    ne.camelCaseSchemaobjref = cc.camelCase(pl(dmodelName));
+                    ne.pascalCaseSchemaobjref = cc.pascalCase(pl(dmodelName));
+                  }
+                });                
                 
               }
   /*             if (element.isarray === true) {
@@ -153,8 +161,8 @@ module.exports = generators.Base.extend({
                       return md;
                     }
                   })[0];
-                  nestedControl.optionsCreate = m.camelCaseSingular + ' as ' + m.camelCaseSingular + '.name for ' + m.camelCaseSingular + ' in ' + m.camelCasePlural;
-                  nestedControl.optionsEdit = m.camelCaseSingular + '._id as ' + m.camelCaseSingular + '.name for ' + m.camelCaseSingular + ' in ' + m.camelCasePlural;
+                  nestedControl.optionsCreate = m.camelCaseSingular + ' as ' + m.camelCaseSingular + '.' + nestedControl.displayelement + ' for ' + m.camelCaseSingular + ' in ' + m.camelCasePlural;
+                  nestedControl.optionsEdit = m.camelCaseSingular + '._id as ' + m.camelCaseSingular + '.' + nestedControl.displayelement + ' for ' + m.camelCaseSingular + ' in ' + m.camelCasePlural;
                 }                
               });
             }
