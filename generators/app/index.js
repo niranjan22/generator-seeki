@@ -111,8 +111,32 @@ module.exports = generators.Base.extend({
         models.push(m);
       });
       
-      console.log('generating models... ');
-      //Generate model outputs
+      console.log('generating server routes... ');
+      //Generate server routes
+      for (var index in models) {
+        var model = models[index];
+        if (model.name !== 'User'){
+          this.fs.copyTpl(
+            this.templatePath('server.routes.js'),
+            this.destinationPath(project.name + '/app/routes/' + model.paramCasePlural + '.server.routes.js'),
+            {model: model});
+        }
+      };   
+
+      console.log('generating server controllers... ');
+      //Generate server controllers
+      for (var index in models) {
+        var model = models[index];
+        if (model.name !== 'User'){
+          this.fs.copyTpl(
+            this.templatePath('server.controller.js'),
+            this.destinationPath(project.name + '/app/controllers/' + model.paramCasePlural + '.server.controller.js'),
+            {model: model});
+        }
+      };   
+      
+      console.log('generating server models... ');
+      //Generate server models
       for (var index in models) {
         var model = models[index];
         if (model.name !== 'User'){
@@ -123,20 +147,8 @@ module.exports = generators.Base.extend({
         }
       };
       
-      console.log('generating server controller... ');
-      //Generate server controller outputs
-      for (var index in models) {
-        var model = models[index];
-        if (model.name !== 'User'){
-          this.fs.copyTpl(
-            this.templatePath('server.controller.js'),
-            this.destinationPath(project.name + '/app/controllers/' + model.paramCasePlural + '.server.controller.js'),
-            {model: model});
-        }
-      };      
-      
-      console.log('generating views...');
-      //Generate view outputs
+      console.log('generating client views...');
+      //Generate client views
       for (var index in project.views) {
         var view = project.views[index];
         console.log('processing view, ', view.viewname);
@@ -204,8 +216,8 @@ module.exports = generators.Base.extend({
         }
       };
 
-      console.log('generating client controllers...');
-      //Generate controllers
+      console.log('generating client side components...');
+      //Generate client components; services, routes, module and controllers
       for (var index in project.controllers) {
         var controller = project.controllers[index];
         console.log('processing controller, ', controller.controllername);
@@ -214,21 +226,49 @@ module.exports = generators.Base.extend({
             return m;
           }
         })[0];
-
+        
+        console.log('generating client module...');
+        //Generate client module
+        this.fs.copyTpl(
+          this.templatePath('client.module.js'),
+          this.destinationPath(project.name + '/public/modules/' + model.paramCasePlural + '/' + model.paramCasePlural + '.client.module.js'),
+          {model: model}
+        );        
+        
+        console.log('generating client routes...');
+        //Generate client routes
+        this.fs.copyTpl(
+          this.templatePath('client.routes.js'),
+          this.destinationPath(project.name + '/public/modules/' + model.paramCasePlural + '/config/' + model.paramCasePlural + '.client.routes.js'),
+          {model: model}
+        );   
+        
+        console.log('generating client services...');
+        //Generate client services
+        this.fs.copyTpl(
+          this.templatePath('client.service.js'),
+          this.destinationPath(project.name + '/public/modules/' + model.paramCasePlural + '/services/' + model.paramCasePlural + '.client.service.js'),
+          {model: model}
+        );   
+        
         var services = [];
         controller.services.forEach( function (service) {
           services.push (cc.pascalCase(pl(service)));
         });
         controller.services = services;
 
+        console.log('generating client controllers...');
+        //Generate client controllers        
         this.fs.copyTpl(
           this.templatePath('client.controller.js'),
           this.destinationPath(project.name + '/public/modules/' + model.paramCasePlural + '/controllers/' + model.paramCasePlural + '.client.controller.js'),
           {controller: controller, model: model}
         );
+        
       };
 
       console.log('generating menus...');
+      //Generate menus
       var menus = [];
       project.menus.forEach( function (menu) {
         console.log('processing menu, ', menu.menuname);
