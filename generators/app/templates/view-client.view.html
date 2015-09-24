@@ -22,7 +22,7 @@
       <div class="row">
       <dl class="dl-horizontal">
       <% view.sections[0].controls.forEach(function(control) { %>
-      <% if ( ["Text", "Number", "Date", "Boolean"].indexOf(control.controltype)>-1 ){ %>
+      <% if ( ["Text", "Number", "Date", "Checkbox"].indexOf(control.controltype)>-1 ){ %>
         <dt><%= control.controllabel %> </dt><dd>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %><%if(control.controltype == "Date"){ %> | date <% } %>}}</dd>
       <% } %>
       <% if ( control.controltype === "Select" ){ %>
@@ -40,7 +40,7 @@
             <thead>
             <tr>
             <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
-             <% if ( ["Text", "Number", "Select", "Date", "Boolean"].indexOf(nestedcontrol.controltype)>-1 ){ %>
+             <% if ( ["Text", "Number", "Select", "Date", "Checkbox"].indexOf(nestedcontrol.controltype)>-1 ){ %>
             <th><%= nestedcontrol.controllabel %></th>
             <% } %>
             <% }); %>
@@ -49,7 +49,7 @@
             <tbody>
             <tr data-ng-repeat="<%= control.modelelementSl %> in <%= view.model.camelCaseSingular %>.<%= control.modelelement %>">
             <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
-            <% if ( ["Text", "Number", "Date", "Boolean"].indexOf(nestedcontrol.controltype)>-1 ){ %>
+            <% if ( ["Text", "Number", "Date", "Checkbox"].indexOf(nestedcontrol.controltype)>-1 ){ %>
             <td>{{ <%= control.modelelementSl %>.<%= nestedcontrol.modelelement %> <% if(nestedcontrol.controltype == "Date"){ %> | date <% } %>}}</td>
             <% } %>
             <% if ( nestedcontrol.controltype === "Select" ){ %>
