@@ -46,6 +46,7 @@
                 <div class="modal-body">
                   <div class="row">
                   <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
+                    <% if ( ["Text", "Number", "Date", "Checkbox", "Calculated", "Select"].indexOf(nestedcontrol.controltype)>-1 ){ %>
                     <div class="col-md-<%= nestedcontrol.width %> form-group">
                       <label class="control-label" for="<%= nestedcontrol.controlname %>"><%= nestedcontrol.controllabel %></label>                  
                     <% if ( ["Text", "Number", "Date", "Checkbox"].indexOf(nestedcontrol.controltype)>-1 ){ %>
@@ -61,6 +62,7 @@
                         ng-options="<%= nestedcontrol.optionsCreate %>" />
                     <% } %>
                     </div>                    
+                    <% } %>                    
                   <% }); %>
                   </div>
                 </div>
@@ -98,7 +100,7 @@
                   <tfoot>
                   <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
                   <% if ( nestedcontrol.controltype === "Footer" ){ %>
-                    <td>{{ <%= view.model.camelCaseSingular %>.<%= nestedcontrol.modelelement %> }}</td>
+                    <td>{{ <%= nestedcontrol.modelelement %> }}</td>
                   <% } %>
                   <% }); %>            
                   </tfoot>

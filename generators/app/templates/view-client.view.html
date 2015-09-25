@@ -61,7 +61,7 @@
             <tfoot>
             <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
             <% if ( nestedcontrol.controltype === "Footer" ){ %>
-            <td>{{ <%= view.model.camelCaseSingular %>.<%= nestedcontrol.modelelement %> }}</td>
+            <td>{{ <%= nestedcontrol.modelelement %> }}</td>
             <% } %>
             <% }); %>            
             </tfoot>
