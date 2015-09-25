@@ -108,7 +108,7 @@
               </div>
               <% } else { %>
               <div class="col-md-<%= control.width %> form-group">
-                <span><%= control.controllabel %></span>
+                <label class="control-label"><%= control.controllabel %></label>
               </div>
                 <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
                 <div class="col-md-<%= nestedcontrol.width %> form-group">
