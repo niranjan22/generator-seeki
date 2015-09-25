@@ -49,7 +49,7 @@
               <% if (control.controltype =="Select"){%>
               <td>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= control.displayelement %> }}</td>
               <% } else { %>
-              <td>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %> <% if(control.controltype == "Date"){ %> | date <% } %> }}</td>
+              <td>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %> <% if(control.controltype == "Date"){ %> | date <% } %> <%if(control.controltype == "Boolean"){ %> | yesNo <% } %>}}</td>
               <% } %>
               <% }); %>
               <td><a class="glyphicon glyphicon-search" href="/#!/<%= view.model.paramCasePlural %>/{{<%= view.model.camelCaseSingular %>._id}}"></a></td>

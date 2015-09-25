@@ -23,7 +23,7 @@
       <dl class="dl-horizontal">
       <% view.sections[0].controls.forEach(function(control) { %>
       <% if ( ["Text", "Number", "Date", "Checkbox"].indexOf(control.controltype)>-1 ){ %>
-        <dt><%= control.controllabel %> </dt><dd>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %><%if(control.controltype == "Date"){ %> | date <% } %>}}</dd>
+        <dt><%= control.controllabel %> </dt><dd>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %><%if(control.controltype == "Date"){ %> | date <% } %> <%if(control.controltype == "Boolean"){ %> | yesNo <% } %>}}</dd>
       <% } %>
       <% if ( control.controltype === "Select" ){ %>
         <dt><%= control.controllabel %> </dt><dd>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= control.displayelement %>}}</dd>
@@ -50,7 +50,7 @@
             <tr data-ng-repeat="<%= control.modelelementSl %> in <%= view.model.camelCaseSingular %>.<%= control.modelelement %>">
             <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
             <% if ( ["Text", "Number", "Date", "Checkbox"].indexOf(nestedcontrol.controltype)>-1 ){ %>
-            <td>{{ <%= control.modelelementSl %>.<%= nestedcontrol.modelelement %> <% if(nestedcontrol.controltype == "Date"){ %> | date <% } %>}}</td>
+            <td>{{ <%= control.modelelementSl %>.<%= nestedcontrol.modelelement %> <% if(nestedcontrol.controltype == "Date"){ %> | date <% } %> <%if(nestedcontrol.controltype == "Boolean"){ %> | yesNo <% } %>}}</td>
             <% } %>
             <% if ( nestedcontrol.controltype === "Select" ){ %>
             <td>{{ <%= control.modelelementSl %>.<%= nestedcontrol.modelelement %>.<%= nestedcontrol.displayelement %> }}</td>
@@ -76,7 +76,7 @@
       <% if ( nestedcontrol.controltype === "Select" ){ %>
         <dt><%= nestedcontrol.controllabel %> </dt><dd>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= nestedcontrol.modelelement %>.<%= nestedcontrol.displayelement %>}}</dd>
       <% } else {%>      
-        <dt><%= nestedcontrol.controllabel %> </dt><dd>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= nestedcontrol.modelelement %><%if(nestedcontrol.controltype == "Date"){ %> | date <% } %>}}</dd>
+        <dt><%= nestedcontrol.controllabel %> </dt><dd>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= nestedcontrol.modelelement %><%if(nestedcontrol.controltype == "Date"){ %> | date <% } %> <%if(nestedcontrol.controltype == "Boolean"){ %> | yesNo <% } %>}}</dd>
       <% }%>      
       <% }); %>
       </dl>
