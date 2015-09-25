@@ -86,7 +86,7 @@
                   <tr data-ng-repeat="<%= control.modelelementSl %> in <%= view.model.camelCaseSingular %>.<%= control.modelelement %>">
                     <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
                     <% if ( ["Text", "Number", "Date", "Checkbox", "Calculated"].indexOf(nestedcontrol.controltype)>-1 ){ %>
-                    <td>{{ <%= control.modelelementSl %>.<%= nestedcontrol.modelelement %> <% if(nestedcontrol.controltype == "Date"){ %> | date <% } %> <%if(nestedcontrol.controltype == "Boolean"){ %> | yesNo <% } %>}}</td>
+                    <td>{{ <%= control.modelelementSl %>.<%= nestedcontrol.modelelement %> <% if(nestedcontrol.controltype == "Date"){ %> | date <% } %> <%if(nestedcontrol.controltype == "Checkbox"){ %> | yesNo <% } %>}}</td>
                     <% } %>
                     <% if ( nestedcontrol.controltype === "Select" ){ %>
                     <td>{{ <%= control.modelelementSl %>.<%= nestedcontrol.modelelement %>.<%= nestedcontrol.displayelement %> }}</td>
