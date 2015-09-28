@@ -177,8 +177,8 @@ angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCaseP
         }
       });
       modalInstance.result.then(function (<%= element.elementNameSingular %>) {
-        <%= method.methodcontent %>
         $scope.<%= model.camelCaseSingular %>.<%= element.elementname %>.push(<%= element.elementNameSingular %>);
+        <%= method.methodcontent %>
       }, function () {
         $log.info('Modal dismissed at: ' + new Date());
       });
