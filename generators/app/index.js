@@ -20,7 +20,7 @@ module.exports = generators.Base.extend({
     };
     
     this.prompt(prompts, function (input) {
-      var project = this.fs.readJSON(input.jsonfile);
+      var project = this.fs.readJSON(input.jsonfile, "utf-8");
       project.name = cc.pascalCase(pl(project.name,1));
       var models = [];
       
@@ -40,6 +40,8 @@ module.exports = generators.Base.extend({
                   upperCaseFirstPlural  : cc.upperCaseFirst(pl(model.name)),
                   elements              : []
                 };
+        m.sequence = model.sequence;
+        
         if (model.elements) {
           console.log('processing models, ', model.name);
           model.elements.forEach( function (element) {

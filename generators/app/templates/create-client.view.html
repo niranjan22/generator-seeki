@@ -1,4 +1,4 @@
-<section data-ng-controller="<%= view.model.pascalCasePlural %>Controller">
+<section data-ng-controller="<%= view.model.pascalCasePlural %>Controller" data-ng-init="init()">
   <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
       <h2>New <%= view.model.titleCaseSingular %></h2>
@@ -98,7 +98,7 @@
                   <tfoot>
                   <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
                   <% if ( nestedcontrol.controltype === "Footer" ){ %>
-                          <td>{{ <%= nestedcontrol.modelelement %> }}</td>
+                    <td>{{ <%= nestedcontrol.modelelement %> }}</td>
                   <% } %>
                   <% }); %>            
                   </tfoot>

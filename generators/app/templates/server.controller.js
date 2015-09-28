@@ -5,6 +5,9 @@
  */
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
+  <% if (model.sequence) { %>
+  Sequence = mongoose.model('Sequence'),
+  <% } %>
 	<%= model.pascalCaseSingular %> = mongoose.model('<%= model.pascalCaseSingular %>'),
 	_ = require('lodash');
 
@@ -15,6 +18,24 @@ exports.create = function(req, res) {
 	var <%= model.camelCaseSingular %> = new <%= model.pascalCaseSingular %>(req.body);
 	<%= model.camelCaseSingular %>.user = req.user;
 
+  <% if (model.sequence) { %>
+  Sequence.update({ name: '<%= model.pascalCaseSingular %>.<%= model.sequence %>' },{$inc: {seqNumber:1}},{}, function (err, numAffected){
+    if(numAffected === 1){
+      Sequence.findOne({ name: '<%= model.pascalCaseSingular %>.<%= model.sequence %>' }, function (err, sequence){
+        <%= model.camelCaseSingular %>.<%= model.sequence %> = sequence.seqNumber;
+        <%= model.camelCaseSingular %>.save(function(err) {
+          if (err) {
+            return res.status(400).send({
+              message: errorHandler.getErrorMessage(err)
+            });
+          } else {
+            res.jsonp(<%= model.camelCaseSingular %>);
+          }
+        });
+      });  
+    }
+  });
+  <% } else {%>
 	<%= model.camelCaseSingular %>.save(function(err) {
 		if (err) {
 			return res.status(400).send({
@@ -24,6 +45,7 @@ exports.create = function(req, res) {
 			res.jsonp(<%= model.camelCaseSingular %>);
 		}
 	});
+  <% } %>
 };
 
 /**

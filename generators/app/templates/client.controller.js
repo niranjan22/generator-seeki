@@ -18,8 +18,14 @@ angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCaseP
     <%= element.resolveLookups %><% } %><% }); %>
 
     <% controller.methods.forEach ( function (method) { %>
+    <% if (method.methodtype === 'init') { %>
+    //init method
+    $scope.<%= method.methodname %> = function () {
+      <%- method.methodcontent %>
+    };    
+    <% } %>
+    
     <% if (method.methodtype === 'create') { %>
-
 		// Create new <%= model.pascalCaseSingular %>
 		$scope.create = function() {
 			// Create new <%= model.pascalCaseSingular %> object
