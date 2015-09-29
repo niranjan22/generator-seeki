@@ -76,16 +76,18 @@
                 <table class="table">
                   <thead>
                   <tr>
+                    <th>S.No</th>
                   <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
-                      <% if ( ["Text", "Number", "Select", "Date", "Checkbox", "Calculated"].indexOf(nestedcontrol.controltype)>-1 ){ %>
-                      <th><%= nestedcontrol.controllabel %></th>
-                      <% } %>
+                    <% if ( ["Text", "Number", "Select", "Date", "Checkbox", "Calculated"].indexOf(nestedcontrol.controltype)>-1 ){ %>
+                    <th><%= nestedcontrol.controllabel %></th>
+                    <% } %>
                   <% }); %>
                     <th></th>
                   </tr>
                   </thead>
                   <tbody>
                   <tr data-ng-repeat="<%= control.modelelementSl %> in <%= view.model.camelCaseSingular %>.<%= control.modelelement %>">
+                    <td>{{ $index +1 }}</td>
                   <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
                     <% if ( ["Text", "Number", "Date", "Checkbox", "Calculated"].indexOf(nestedcontrol.controltype)>-1 ){ %>
                     <td>{{ <%= control.modelelementSl %>.<%= nestedcontrol.modelelement %> <% if(nestedcontrol.controltype == "Date"){ %> | date <% } %> <%if(nestedcontrol.controltype == "Checkbox"){ %> | yesNo <% } %>}}</td>

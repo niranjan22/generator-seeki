@@ -35,25 +35,27 @@
         <table class="table table-striped table-hover">
           <thead>
           <tr>
-              <% view.sections[0].controls.forEach(function(control) { %>
-              <th><%= control.controllabel %></th>
-              <% }); %>
-              <th></th>
-<!--               <th>E</th>
+            <th>S.No</th>
+            <% view.sections[0].controls.forEach(function(control) { %>
+            <th><%= control.controllabel %></th>
+            <% }); %>
+            <th></th>
+<!--          <th>E</th>
               <th>D</th> -->
           </tr>
           </thead>
           <tbody>
           <tr data-ng-repeat="<%= view.model.camelCaseSingular %> in <%= view.model.camelCasePlural %> | filter: searchtext">
-              <% view.sections[0].controls.forEach(function(control) { %>
-              <% if (control.controltype =="Select"){%>
-              <td>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= control.displayelement %> }}</td>
-              <% } else { %>
-              <td>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %> <% if(control.controltype == "Date"){ %> | date <% } %> <%if(control.controltype == "Checkbox"){ %> | yesNo <% } %>}}</td>
-              <% } %>
-              <% }); %>
-              <td><a class="glyphicon glyphicon-search" href="/#!/<%= view.model.paramCasePlural %>/{{<%= view.model.camelCaseSingular %>._id}}"></a></td>
-<!--               <td><a class="glyphicon glyphicon-edit" href="/#!/<%= view.model.paramCasePlural %>/{{<%= view.model.camelCaseSingular %>._id}}/edit"></a></td>
+            <td>{{ $index +1 }}</td>
+            <% view.sections[0].controls.forEach(function(control) { %>
+            <% if (control.controltype =="Select"){%>
+            <td>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= control.displayelement %> }}</td>
+            <% } else { %>
+            <td>{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %> <% if(control.controltype == "Date"){ %> | date <% } %> <%if(control.controltype == "Checkbox"){ %> | yesNo <% } %>}}</td>
+            <% } %>
+            <% }); %>
+            <td><a class="glyphicon glyphicon-search" href="/#!/<%= view.model.paramCasePlural %>/{{<%= view.model.camelCaseSingular %>._id}}"></a></td>
+<!--          <td><a class="glyphicon glyphicon-edit" href="/#!/<%= view.model.paramCasePlural %>/{{<%= view.model.camelCaseSingular %>._id}}/edit"></a></td>
               <td><a class="glyphicon glyphicon-trash" ng-click="remove(<%= view.model.camelCaseSingular %>)"></a></td> -->
           </tr>
           </tbody>

@@ -31,7 +31,11 @@
                   ng-required="true" 
                   ng-options="<%= control.optionsCreate %>" />
                 <% } else {%>
+                <% if(control.isreadonly===true) {%> 
+                <label class="form-control" id="<%= control.controlname %>">{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %> }}</label>
+                <% } else { %> 
                 <input type="<%= control.controltype %>" ng-model="<%= view.model.camelCaseSingular %>.<%= control.modelelement %>" id="<%= control.controlname %>" class="form-control" placeholder="<%= control.exampletext %>" required />
+                <% } %> 
                 <% } %> 
               </div>
             <% } %>
@@ -47,18 +51,18 @@
                     <% if ( ["Text", "Number", "Date", "Checkbox", "Calculated", "Select"].indexOf(nestedcontrol.controltype)>-1 ){ %>
                     <div class="col-md-<%= nestedcontrol.width %> form-group">
                       <label class="control-label" for="<%= nestedcontrol.controlname %>"><%= nestedcontrol.controllabel %></label>
-                    <% if ( ["Text", "Number", "Date", "Checkbox"].indexOf(nestedcontrol.controltype)>-1 ){ %>
-                      <input type="<%= nestedcontrol.controltype %>" ng-model="<%= control.modelelementSl %>.<%= nestedcontrol.modelelement %>" id="<%= nestedcontrol.controlname %>" class="form-control" placeholder="<%= nestedcontrol.exampletext %>" required/>
-                    <% } %>
-                    <% if(nestedcontrol.controltype==="Calculated") { %>
-                      <label class="form-control" id="<%= nestedcontrol.controlname %>">{{ <%= nestedcontrol.calculation %> }}</label>
-                    <% } %>
-                    <% if(nestedcontrol.controltype==="Select") { %>
-                      <select id="<%= nestedcontrol.controlname %>" class="form-control" 
-                        ng-model="<%= control.modelelementSl %>.<%= nestedcontrol.modelelement %>" 
-                        ng-required="true" 
-                        ng-options="<%= nestedcontrol.optionsCreate %>" />
-                    <% } %>
+                      <% if ( ["Text", "Number", "Date", "Checkbox"].indexOf(nestedcontrol.controltype)>-1 ){ %>
+                        <input type="<%= nestedcontrol.controltype %>" ng-model="<%= control.modelelementSl %>.<%= nestedcontrol.modelelement %>" id="<%= nestedcontrol.controlname %>" class="form-control" placeholder="<%= nestedcontrol.exampletext %>" required/>
+                      <% } %>
+                      <% if(nestedcontrol.controltype==="Calculated") { %>
+                        <label class="form-control" id="<%= nestedcontrol.controlname %>">{{ <%= nestedcontrol.calculation %> }}</label>
+                      <% } %>
+                      <% if(nestedcontrol.controltype==="Select") { %>
+                        <select id="<%= nestedcontrol.controlname %>" class="form-control" 
+                          ng-model="<%= control.modelelementSl %>.<%= nestedcontrol.modelelement %>" 
+                          ng-required="true" 
+                          ng-options="<%= nestedcontrol.optionsCreate %>" />
+                      <% } %>
                     </div>                    
                     <% } %>
                     <% }); %>
@@ -74,16 +78,18 @@
                 <table class="table">
                   <thead>
                   <tr>
-                      <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
-                      <% if ( ["Text", "Number", "Select", "Date", "Checkbox", "Calculated"].indexOf(nestedcontrol.controltype)>-1 ){ %>
-                      <th><%= nestedcontrol.controllabel %></th>
-                      <% } %>
-                      <% }); %>
-                      <th></th>
+                    <th>S.No</th>
+                    <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
+                    <% if ( ["Text", "Number", "Select", "Date", "Checkbox", "Calculated"].indexOf(nestedcontrol.controltype)>-1 ){ %>
+                    <th><%= nestedcontrol.controllabel %></th>
+                    <% } %>
+                    <% }); %>
+                    <th></th>
                   </tr>
                   </thead>
                   <tbody>
                   <tr data-ng-repeat="<%= control.modelelementSl %> in <%= view.model.camelCaseSingular %>.<%= control.modelelement %>">
+                    <td>{{ $index +1 }}</td>
                     <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
                     <% if ( ["Text", "Number", "Date", "Checkbox", "Calculated"].indexOf(nestedcontrol.controltype)>-1 ){ %>
                     <td>{{ <%= control.modelelementSl %>.<%= nestedcontrol.modelelement %> <% if(nestedcontrol.controltype == "Date"){ %> | date <% } %> <%if(nestedcontrol.controltype == "Checkbox"){ %> | yesNo <% } %>}}</td>
@@ -118,7 +124,11 @@
                   ng-required="true" 
                   ng-options="<%= nestedcontrol.optionsCreate %>" />
                 <% } else {%>
+                <% if(control.isreadonly===true) {%> 
+                <label class="form-control" id="<%= nestedcontrol.controlname %>">{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= nestedcontrol.modelelement %> }}</label>
+                <% } else { %> 
                 <input type="<%= nestedcontrol.controltype %>" ng-model="<%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= nestedcontrol.modelelement %>" id="<%= nestedcontrol.controlname %>" class="form-control" placeholder="<%= nestedcontrol.exampletext %>" required />
+                <% } %>                 
                 <% } %>
               </div>
               <% }); %>
