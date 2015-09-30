@@ -32,7 +32,7 @@
                   ng-options="<%= control.optionsCreate %>" />
                 <% } else {%>
                 <% if(control.isreadonly===true) {%> 
-                <label class="form-control" id="<%= control.controlname %>">{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %> }}</label>
+                <label class="form-control" id="<%= control.controlname %>">{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %> <% if(control.controltype == "Date"){ %> | date <% } %> <%if(control.controltype == "Checkbox"){ %> | yesNo <% } %>}}</label>
                 <% } else { %> 
                 <input type="<%= control.controltype %>" ng-model="<%= view.model.camelCaseSingular %>.<%= control.modelelement %>" id="<%= control.controlname %>" class="form-control" placeholder="<%= control.exampletext %>" required />
                 <% } %> 
@@ -125,7 +125,7 @@
                   ng-options="<%= nestedcontrol.optionsCreate %>" />
                 <% } else {%>
                 <% if(control.isreadonly===true) {%> 
-                <label class="form-control" id="<%= nestedcontrol.controlname %>">{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= nestedcontrol.modelelement %> }}</label>
+                <label class="form-control" id="<%= nestedcontrol.controlname %>">{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= nestedcontrol.modelelement %> <% if(nestedcontrol.controltype == "Date"){ %> | date <% } %> <%if(nestedcontrol.controltype == "Checkbox"){ %> | yesNo <% } %> }}</label>
                 <% } else { %> 
                 <input type="<%= nestedcontrol.controltype %>" ng-model="<%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= nestedcontrol.modelelement %>" id="<%= nestedcontrol.controlname %>" class="form-control" placeholder="<%= nestedcontrol.exampletext %>" required />
                 <% } %>                 
