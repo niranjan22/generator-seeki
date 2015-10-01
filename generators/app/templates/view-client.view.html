@@ -39,6 +39,7 @@
           <table class="table">
             <thead>
             <tr>
+            <th>S.No</th>
             <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
              <% if ( ["Text", "Number", "Select", "Date", "Checkbox"].indexOf(nestedcontrol.controltype)>-1 ){ %>
             <th><%= nestedcontrol.controllabel %></th>
