@@ -57,7 +57,7 @@
                       <input type="<%= nestedcontrol.controltype %>" ng-model="<%= control.modelelementSl %>.<%= nestedcontrol.modelelement %>" id="<%= nestedcontrol.controlname %>" class="form-control" placeholder="<%= nestedcontrol.exampletext %>" required />
                     <% } %>
                     <% if(nestedcontrol.controltype==="Calculated") { %>
-                      <label class="form-control" id="<%= nestedcontrol.controlname %>" >{{ <%= nestedcontrol.calculation %> }}</label>
+                      <label class="form-control" id="<%= nestedcontrol.controlname %>" >{{ <%= nestedcontrol.calculation %>  || 0 }}</label>
                     <% } %>                    
                     <% if(nestedcontrol.controltype==="Select") { %>
                       <select id="<%= nestedcontrol.controlname %>" class="form-control" 
