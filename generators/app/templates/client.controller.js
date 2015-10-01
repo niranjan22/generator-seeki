@@ -29,7 +29,7 @@ angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCaseP
 		// Create new <%= model.pascalCaseSingular %>
 		$scope.create = function() {
 			// Create new <%= model.pascalCaseSingular %> object
-			var <%= model.camelCaseSingular %> = new <%= model.pascalCasePlural %> (this.<%= model.camelCaseSingular %>);
+			var <%= model.camelCaseSingular %> = this.<%= model.camelCaseSingular %>;
       <% model.elements.forEach ( function (element) { %><% if (element.elementtype === 'Schema.Types.ObjectId') { %>
       <%= model.camelCaseSingular %>.<%= element.elementname %> = <%= model.camelCaseSingular %>.<%= element.elementname %>._id;
       <% } %><% }) %>
@@ -55,7 +55,7 @@ angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCaseP
       <% }) %>
       
       <%= model.camelCaseSingular %>.created = Date.now;
-
+      <%= model.camelCaseSingular %> = new <%= model.pascalCasePlural %> (<%= model.camelCaseSingular %>);
 			// Redirect after save
 			<%= model.camelCaseSingular %>.$save(function(response) {
 				//$location.path('<%= model.paramCasePlural %>/' + response._id);
