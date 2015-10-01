@@ -157,7 +157,7 @@ angular.module('<%= model.paramCasePlural %>').controller('<%= model.pascalCaseP
 
     <% if (method.methodtype === 'standAlone') { %>
     $scope.<%= method.methodname %> = function () {
-      <%= method.methodcontent %>
+      <%- method.methodcontent %>
     };
     <% } %>
 
