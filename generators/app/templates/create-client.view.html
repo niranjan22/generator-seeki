@@ -23,18 +23,18 @@
             <div class="row">
             <% view.sections[0].controls.forEach(function(control) { %>
             <% if ( ["Text", "Number", "Select", "Date", "Checkbox"].indexOf(control.controltype)>-1 ){ %>
-              <div class="col-md-<%= control.width %> form-group">
-                <label class="control-label" for="<%= control.controlname %>"><%= control.controllabel %></label>
+              <div class="col-md-12 form-group">
+                <label class="control-label col-md-3" for="<%= control.controlname %>"><%= control.controllabel %></label>
                 <% if(control.controltype==="Select") {%> 
-                <select id="<%= control.controlname %>" class="form-control" 
+                <select id="<%= control.controlname %>" class="form-control col-md-9" 
                   ng-model="<%= view.model.camelCaseSingular %>.<%= control.modelelement %>" 
                   ng-required="true" 
                   ng-options="<%= control.optionsCreate %>" />
                 <% } else {%>
                 <% if(control.isreadonly===true) {%> 
-                <label class="form-control" id="<%= control.controlname %>">{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %> <% if(control.controltype == "Date"){ %> | date <% } %> <%if(control.controltype == "Checkbox"){ %> | yesNo <% } %>}}</label>
+                <label class="form-control col-md-3" id="<%= control.controlname %>">{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %> <% if(control.controltype == "Date"){ %> | date <% } %> <%if(control.controltype == "Checkbox"){ %> | yesNo <% } %>}}</label>
                 <% } else { %> 
-                <input type="<%= control.controltype %>" ng-model="<%= view.model.camelCaseSingular %>.<%= control.modelelement %>" id="<%= control.controlname %>" class="form-control" placeholder="<%= control.exampletext %>" required />
+                <input type="<%= control.controltype %>" ng-model="<%= view.model.camelCaseSingular %>.<%= control.modelelement %>" id="<%= control.controlname %>" class="form-control col-md-9" placeholder="<%= control.exampletext %>" required />
                 <% } %> 
                 <% } %> 
               </div>
@@ -73,7 +73,7 @@
                   <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
                 </div>
               </script>      
-              <div class="col-md-<%= control.width %> form-group">
+              <div class="col-md-12 form-group">
                 <label class="control-label" for="<%= control.controlname %>"><%= control.controllabel %></label>                
                 <table class="table">
                   <thead>
@@ -112,22 +112,22 @@
                 <button class="btn btn-primary" ng-click="add<%= control.modelelementSl %>()"><span class="glyphicon glyphicon-plus"></span></button>
               </div>
             <% } else { %>
-              <div class="col-md-<%= control.width %> form-group">
-                <label class="control-label"><%= control.controllabel %></label>
+              <div class="col-md-12 form-group">
+                <label class="control-label col-md-12"><%= control.controllabel %></label>
               </div>
               <% control.nestedcontrols.forEach(function(nestedcontrol) { %>
-              <div class="col-md-<%= nestedcontrol.width %> form-group">
-                <label class="control-label" for="<%= nestedcontrol.controlname %>"><%= nestedcontrol.controllabel %></label>
+              <div class="col-md-12 form-group">
+                <label class="control-label col-md-3" for="<%= nestedcontrol.controlname %>"><%= nestedcontrol.controllabel %></label>
                 <% if(nestedcontrol.controltype==="Select") {%>
-                <select id="<%= nestedcontrol.controlname %>" class="form-control" 
+                <select id="<%= nestedcontrol.controlname %>" class="form-control col-md-9" 
                   ng-model="<%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= nestedcontrol.modelelement %>" 
                   ng-required="true" 
                   ng-options="<%= nestedcontrol.optionsCreate %>" />
                 <% } else {%>
                 <% if(control.isreadonly===true) {%> 
-                <label class="form-control" id="<%= nestedcontrol.controlname %>">{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= nestedcontrol.modelelement %> <% if(nestedcontrol.controltype == "Date"){ %> | date <% } %> <%if(nestedcontrol.controltype == "Checkbox"){ %> | yesNo <% } %> }}</label>
+                <label class="form-control col-md-3" id="<%= nestedcontrol.controlname %>">{{ <%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= nestedcontrol.modelelement %> <% if(nestedcontrol.controltype == "Date"){ %> | date <% } %> <%if(nestedcontrol.controltype == "Checkbox"){ %> | yesNo <% } %> }}</label>
                 <% } else { %> 
-                <input type="<%= nestedcontrol.controltype %>" ng-model="<%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= nestedcontrol.modelelement %>" id="<%= nestedcontrol.controlname %>" class="form-control" placeholder="<%= nestedcontrol.exampletext %>" required />
+                <input type="<%= nestedcontrol.controltype %>" ng-model="<%= view.model.camelCaseSingular %>.<%= control.modelelement %>.<%= nestedcontrol.modelelement %>" id="<%= nestedcontrol.controlname %>" class="form-control col-md-9" placeholder="<%= nestedcontrol.exampletext %>" required />
                 <% } %>                 
                 <% } %>
               </div>
